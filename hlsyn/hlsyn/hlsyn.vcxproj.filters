@@ -24,9 +24,6 @@
     <ClCompile Include="FileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Variable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -38,18 +35,18 @@
     <ClInclude Include="FileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Variable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="netlistFile">
+    <None Include="verilogFile">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="verilogFile">
+    <None Include="cFile">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="latency">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

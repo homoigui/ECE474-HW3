@@ -21,7 +21,7 @@ int readfile(char* file, vector<Variable> &v, vector<Module> &top) {
 			istringstream iss(line);
 
 			vector<string> tokens;
-			copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter(tokens));
+			copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter(tokens)); //splits each word into its own vector
 			string keyword;
 
 			if (tokens.size() == 0) { //if empty line do nothing and move to next line
