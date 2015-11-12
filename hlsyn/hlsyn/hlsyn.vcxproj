@@ -143,10 +143,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileIO.cpp" />
+    <ClCompile Include="HLSM.cpp" />
     <ClCompile Include="hlsyn.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="HLSM.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cFile" />

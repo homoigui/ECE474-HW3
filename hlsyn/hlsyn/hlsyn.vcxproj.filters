@@ -21,9 +21,15 @@
     <ClCompile Include="FileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HLSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HLSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
