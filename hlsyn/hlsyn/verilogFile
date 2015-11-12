@@ -1,0 +1,19 @@
+`timescale 1ns / 1ps
+
+module circuit(a, b, c, Clk, Rst, z, x);
+	input [7:0] a, b, c;
+	input Clk, Rst;
+	output [15:0] x;
+	output [7:0] z;
+	wire [15:0] f, g, xwire;
+	wire [7:0] d, e;
+	wire lt, eq;
+
+	ADD #(8) ADD_8_1(a, b, d);
+	ADD #(8) ADD_8_2(a, c, e);
+	SCOMP #(8) SCOMP_8_1(d, e, g, lt, eq);
+	MUX2x1 #(8) MUX_8_1(d, e, g, z);
+	MUL #(16) MUL_16_1(a, c, f);
+	SUB #(16) SUB_16_1(f, d, xwire);
+	SREG #(16) SREG_16_1(xwire, Clk, Rst, x);
+endmodule

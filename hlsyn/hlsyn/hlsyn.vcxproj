@@ -142,7 +142,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bits.cpp" />
+    <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="hlsyn.cpp" />
+    <ClCompile Include="Module.cpp" />
+    <ClCompile Include="Variable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bits.h" />
+    <ClInclude Include="FileIO.h" />
+    <ClInclude Include="Module.h" />
+    <ClInclude Include="Variable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="netlistFile" />
+    <None Include="verilogFile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
