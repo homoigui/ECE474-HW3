@@ -1,12 +1,11 @@
 #include "FileIO.h"
-#include "Module.h"
 #include <sstream>
 #include <algorithm>
 #include <iterator>
 #include "Variable.h"
 
 
-int readfile(char* file, vector<Variable> &v, vector<Module> &top) {
+int readfile(char* file, vector<Variable> &v) {
 	ifstream a_file(file);
 	string line;
 
@@ -55,7 +54,7 @@ int readfile(char* file, vector<Variable> &v, vector<Module> &top) {
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
-				Module *temp = new Module();
+				
 				if (tokens.size() < 4) { //means REG =
 					if (tokens[1].compare("=") != 0) {
 						return -2;
@@ -79,14 +78,7 @@ int readfile(char* file, vector<Variable> &v, vector<Module> &top) {
 					if (tokens[3].compare("+") == 0 || tokens[3].compare("-") == 0 || tokens[3].compare("*") == 0 || tokens[3].compare("<") == 0 || tokens[3].compare(">") == 0
 						|| tokens[3].compare("==") == 0 || tokens[3].compare("<<") == 0 || tokens[3].compare(">>") == 0) {
 
-						temp->setOp(tokens[3]);
-						temp->var.push_back(tokens[0]);
-						temp->var.push_back(tokens[2]);
-						temp->var.push_back(tokens[4]);
-
-						temp->addPort(v);
-
-						top.push_back(*temp);
+					
 					}
 					else {
 						return -2;
@@ -632,27 +624,3 @@ bool areSize(int s, vector<Variable> &v, string t) {
 	return false;
 }
 
-int checkVar(vector<Variable> &v, vector<Module> &top) {
-	
-
-	for (vector<Module>::size_type i = 0; i != top.size(); i++) {
-		int found = 0;
-		for (vector<string>::size_type k = 0; k != top[i].var.size(); k++) {
-			found = 0;
-			string p = top[i].var[k];
-			for (vector<Variable>::size_type j = 0; j != v.size(); j++) {
-				string s = v[j].var;
-				if (s.compare(p) == 0) {
-					found = 1;
-					break;
-				}
-			}
-			if (!found) {
-				cout << "Missing declariation of variable" << endl;
-				return -9;
-			}
-		}
-		
-	}
-	return 0;
-}

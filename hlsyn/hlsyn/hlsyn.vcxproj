@@ -142,15 +142,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bits.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="hlsyn.cpp" />
-    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bits.h" />
     <ClInclude Include="FileIO.h" />
-    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cFile" />

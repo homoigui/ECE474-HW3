@@ -18,24 +18,12 @@
     <ClCompile Include="hlsyn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bits.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FileIO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Variable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FileIO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Variable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
