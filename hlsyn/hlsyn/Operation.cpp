@@ -28,6 +28,10 @@ Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable 
 	vertex = v;
 	sel = s;
 }
+
+Variable Mux::GetSel() {
+	return sel;
+}
 void Operation::setType(string t) {
 	type = t;
 }

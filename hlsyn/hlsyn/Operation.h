@@ -24,6 +24,7 @@ public:
 	int getDelay();
 	void setType(string t);
 	void setDelay(int d);
+	//virtual Variable GetSel(){}
 };
 
 class Mux : public Operation {
@@ -31,6 +32,7 @@ private:
 	Variable sel;
 public:
 	Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s);
+	Variable GetSel();
 };
 
 #endif

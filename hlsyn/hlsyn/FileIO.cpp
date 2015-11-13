@@ -111,6 +111,7 @@ int readfile(char* file, vector<Variable> &v, vector<Operation*> &o) {
 							}
 						}
 						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel); //Put in a vector for now, can pre schedule here
+						cout << static_cast<Mux*>(mtemp)->GetSel().getVar() << endl;
 						vertex++;
 						o.push_back(mtemp);
 					}
