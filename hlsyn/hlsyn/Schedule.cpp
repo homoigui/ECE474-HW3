@@ -77,31 +77,32 @@ void Schedule::UnscheduleSequencingGraph() {
 			}
 		}
 	}
-	USGSupport(nop, v);
+
+	for (int i = 0; i < nop->getChild().size(); i++) {
+		USGSupport(nop->getChild()[i], v);
+	}
+	
 }
 
-void Schedule::USGSupport(Operation* o, vector<Operation*> &v) {
+void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 	if (!o->getOutput().getType().compare("output")) {
 		return; //reached the end
 	}
 	else {
-		for (int i = 0; i < o->getChild().size(); i++) { //check every child
-			if (!o->getOutput().getType().compare("variable")) {
-				for (int j = 0; j < v.size(); j++) { //compare against remaining vertex
-					if (!v[j]->getType().compare("?")) { //if mux
-						if (!o->getChild()[i]->getOutput().getVar().compare(v[j]->getInput1().getVar()) || !o->getChild()[i]->getOutput().getVar().compare(v[j]->getInput2().getVar()) || !o->getChild()[i]->getOutput().getVar().compare(static_cast<Mux*>(v[j])->GetSel().getVar())) {
-
-						}
-					}
-					else {
-						if (!o->getChild()[i]->getOutput().getVar().compare(v[j]->getInput1().getVar()) || !o->getChild()[i]->getOutput().getVar().compare(v[j]->getInput2().getVar())) {
-
-						}
-					}
-					
+		for (int i = 0; i < v.size(); i++) {
+			string var = o->getOutput().getVar();
+			if (!v[i]->getType().compare("?")) {
+				if (!var.compare(v[i]->getInput1().getVar()) || !var.compare(v[i]->getInput2().getVar()) || !var.compare(static_cast<Mux*>(v[i])->GetSel().getVar())) {
+					o->AddChild(v[i]);
+					USGSupport(v[i], v);
 				}
 			}
-			
+			else {
+				if (!var.compare(v[i]->getInput1().getVar()) || !var.compare(v[i]->getInput2().getVar())) {
+					o->AddChild(v[i]);
+					USGSupport(v[i], v);
+				}
+			}
 		}
 	}
 }

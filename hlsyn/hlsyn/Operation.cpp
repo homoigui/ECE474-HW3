@@ -6,7 +6,7 @@ Operation::Operation() {
 	type = "nop";
 	delay = -1;
 	vertex = -1;
-	time = -1;
+	time = 0;
 }
 
 Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o) {

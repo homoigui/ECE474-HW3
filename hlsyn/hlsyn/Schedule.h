@@ -20,7 +20,7 @@ private:
 	void SetResource();
 	bool ALAP();
 	void UnscheduleSequencingGraph();
-	void USGSupport(Operation* o, vector<Operation*> &v);
+	void USGSupport(Operation *o, vector<Operation*> v);
 public:
 	Schedule();
 	Schedule(vector<Operation*> v);
