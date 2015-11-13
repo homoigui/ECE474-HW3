@@ -7,11 +7,12 @@
 
 
 using namespace std;
-
+//TODO: Check for latency error
+//Friend class?
 int main(int argc, char* argv[])
 {
 	vector<Variable> v;
-	vector<Operation> o;
+	vector<Operation*> o;
 
 	if (argc == 4) {
 		int read = readfile(argv[1], v, o);

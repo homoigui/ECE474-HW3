@@ -19,6 +19,10 @@ Variable::~Variable(){
 
 }
 
+string Variable::getVar() {
+	return var;
+}
+
 void Variable::parseDataType(string s) {
 	if (s.compare("Int1") == 0) {
 		this->size = 1;

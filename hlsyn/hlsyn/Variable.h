@@ -15,6 +15,7 @@ public:
 	Variable();
 	~Variable();
 	Variable(string v, string t, string d); //d is dataType
+	string getVar();
 	
 };
 

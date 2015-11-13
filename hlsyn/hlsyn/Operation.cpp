@@ -5,13 +5,10 @@ using namespace std;
 Operation::Operation() {
 	type = "unknown";
 	delay = 999;
-	input1 = "unknown";
-	input2 = "unknown";
-	output = "unknown";
 	vertex = 999;
 }
 
-Operation::Operation(string t, int d, int v, string i1, string i2, string o) {
+Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o) {
 	type = t;
 	delay = d;
 	input1 = i1;
@@ -22,6 +19,15 @@ Operation::Operation(string t, int d, int v, string i1, string i2, string o) {
 
 Operation::~Operation() {};
 
+Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s) {
+	type = t;
+	delay = d;
+	input1 = i1;
+	input2 = i2;
+	output = o;
+	vertex = v;
+	sel = s;
+}
 void Operation::setType(string t) {
 	type = t;
 }
