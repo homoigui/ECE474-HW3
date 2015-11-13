@@ -145,10 +145,14 @@
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="HLSM.cpp" />
     <ClCompile Include="hlsyn.cpp" />
+    <ClCompile Include="Operation.cpp" />
+    <ClCompile Include="Schedule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="HLSM.h" />
+    <ClInclude Include="Operation.h" />
+    <ClInclude Include="Schedule.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cFile" />

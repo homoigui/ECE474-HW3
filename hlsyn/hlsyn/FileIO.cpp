@@ -1,4 +1,7 @@
 #include "FileIO.h"
+#include "Variable.h"
+#include "Module.h"
+#include "Bits.h"
 #include <sstream>
 #include <algorithm>
 #include <iterator>
@@ -12,7 +15,7 @@ int readfile(char* file) {
 	if (a_file) {
 		//If File exist
 		while (getline(a_file, line)) {
-			int comment = line.find("//"); //Erasees comment
+			int comment = line.find("//"); //Erases comment
 			if (comment > 0) {
 				line.erase(line.begin() + comment, line.end());
 			}
@@ -50,6 +53,13 @@ int readfile(char* file) {
 					v.push_back(*temp);
 				}
 
+			}
+			else if (keyword.compare("if") == 0) { //an if statement
+				//perform actions here if evaluates to true then skip else lines
+				//ifTaken = true;
+			}
+			else if (keyword.compare("else") == 0) { //an if statement (else)
+				//perform actions here if(ifTaken) == false
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
