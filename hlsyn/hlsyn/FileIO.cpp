@@ -1,16 +1,10 @@
 #include "FileIO.h"
-#include "Variable.h"
-#include "Module.h"
-#include "Bits.h"
-#include <sstream>
-#include <algorithm>
-#include <iterator>
 
 
-int readfile(char* file) {
+int readfile(char* file, vector<Variable> &v, vector<Operation> &o) {
 	ifstream a_file(file);
 	string line;
-
+	int vertex = 1;
 
 	if (a_file) {
 		//If File exist
@@ -32,8 +26,8 @@ int readfile(char* file) {
 				keyword = tokens[0]; //First keyword
 			}
 
-
-			if (keyword.compare("input") == 0 || keyword.compare("output") == 0 || keyword.compare("wire") == 0 || keyword.compare("register") == 0) { // Input is found
+			//tokens[0] = input / output / variable, tokens[1] = dataType
+			if (keyword.compare("input") == 0 || keyword.compare("output") == 0 || keyword.compare("variable") == 0) { // Input is found
 				vector<string> var;
 
 				for (vector<int>::size_type i = 2; i != tokens.size(); i++) { //Puts the variable in getline into its own vector
@@ -45,72 +39,54 @@ int readfile(char* file) {
 				//Var is done
 
 				for (vector<int>::size_type i = 0; i != var.size(); i++) {
-					Variable *temp = new Variable();
-					temp->var = var[i];
-					temp->type = keyword;
-					temp->sign = parseInt(tokens[1]).getSign();
-					temp->size = parseInt(tokens[1]).getBits();
+					Variable *temp = new Variable(var[i], tokens[0], tokens[1]);
 					v.push_back(*temp);
 				}
 
 			}
-			else if (keyword.compare("if") == 0) { //an if statement
-				//perform actions here if evaluates to true then skip else lines
-				//ifTaken = true;
-			}
-			else if (keyword.compare("else") == 0) { //an if statement (else)
-				//perform actions here if(ifTaken) == false
-			}
+			//else if (keyword.compare("if") == 0) { //an if statement
+			//	//perform actions here if evaluates to true then skip else lines
+			//	//ifTaken = true;
+			//}
+			//else if (keyword.compare("else") == 0) { //an if statement (else)
+			//	//perform actions here if(ifTaken) == false
+			//}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
 				
-				if (tokens.size() < 4) { //means REG =
-					if (tokens[1].compare("=") != 0) {
-						return -2;
-					}
-					else {
-						temp->setOp("=");
-						temp->var.push_back(tokens[0]);
-						temp->var.push_back(tokens[2]);
-
-						temp->addPort(v);
-
-						top.push_back(*temp);
-					}
-
-
-				}
-				else if (tokens[1].compare("=") != 0) {
-					return -3;
+			
+				if (tokens[1].compare("=") != 0) {
+					return -3; //Nothing found
 				}
 				else if (tokens.size() < 6) {//ITS ADD OR SUB OR MUL OR COMPO AND SHIFT
-					if (tokens[3].compare("+") == 0 || tokens[3].compare("-") == 0 || tokens[3].compare("*") == 0 || tokens[3].compare("<") == 0 || tokens[3].compare(">") == 0
-						|| tokens[3].compare("==") == 0 || tokens[3].compare("<<") == 0 || tokens[3].compare(">>") == 0) {
-
-					
+					if (tokens[3].compare("+") == 0 || tokens[3].compare("-") == 0 || tokens[3].compare("*") == 0 || tokens[3].compare("<") == 0 || tokens[3].compare(">") == 0	|| tokens[3].compare("==") == 0 || tokens[3].compare("<<") == 0 || tokens[3].compare(">>") == 0) {
+						int delay;
+						if (tokens[3].compare("*") == 0) {
+							delay = 2;
+						}
+						else {
+							delay = 1;
+						}
+						Operation *otemp = new Operation(tokens[3], delay, vertex, tokens[2], tokens[4], tokens[0]); //Put in a vector for now, can pre schedule here
+						vertex++;
+						o.push_back(*otemp);
+						delete otemp;
 					}
 					else {
-						return -2;
+						return -2; //invalid operator
 					}
 				}
 				else if (tokens.size() == 7) { //ITS MUX 
 					if (tokens[3].compare("?") != 0 && tokens[5].compare(":") != 0) {
 						return -2;
+						vertex++;
 					}
 					else {
-						temp->setOp("?");
-						temp->var.push_back(tokens[0]);
-						temp->var.push_back(tokens[2]);
-						temp->var.push_back(tokens[4]);
-						temp->var.push_back(tokens[6]);
-
-						temp->addPort(v);
-
-						top.push_back(*temp);
+					
 					}
 				}
 				else {
-					return -3;
+					return -999; //critical error
 				}
 			}
 		}

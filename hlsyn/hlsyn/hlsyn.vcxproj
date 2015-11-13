@@ -147,16 +147,17 @@
     <ClCompile Include="hlsyn.cpp" />
     <ClCompile Include="Operation.cpp" />
     <ClCompile Include="Schedule.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h" />
     <ClInclude Include="HLSM.h" />
     <ClInclude Include="Operation.h" />
     <ClInclude Include="Schedule.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cFile" />
-    <None Include="latency" />
     <None Include="verilogFile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

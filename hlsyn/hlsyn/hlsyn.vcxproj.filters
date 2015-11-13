@@ -30,6 +30,9 @@
     <ClCompile Include="Schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Variable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileIO.h">
@@ -44,15 +47,15 @@
     <ClInclude Include="Schedule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Variable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="verilogFile">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="cFile">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="latency">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

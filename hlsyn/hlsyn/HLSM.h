@@ -1,4 +1,5 @@
 #pragma once
+//Output
 class HLSM
 {
 private:

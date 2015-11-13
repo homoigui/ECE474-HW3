@@ -4,7 +4,7 @@
 #include <vector>
 #include "Operation.h"
 
-
+//Connect operators here
 using namespace std;
 
 class Schedule {

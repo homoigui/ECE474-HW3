@@ -3,14 +3,18 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <map>
 #include <vector>
-
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include "Bits.h"
+#include "Variable.h"
+#include "Operation.h"
 
 using namespace std;
 
 
-int readfile(char* file);
+int readfile(char* file, vector<Variable> &v, vector<Operation> &o);
 
 
 

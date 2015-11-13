@@ -9,17 +9,25 @@ using namespace std;
 class Operation {
 private:
 	string type;
-	int latency;
-
+	string output;
+	string input1;
+	string input2;
+	int delay;
+	int vertex;
+	vector<Operation> child;
 public:
 	Operation();
-	Operation(string t, int l);
+	Operation(string t, int d, int v, string i1, string i2, string o);
 	~Operation();
 	string getType();
-	int getLatency();
+	int getDelay();
 	void setType(string t);
-	void setLatency(int l);
+	void setDelay(int d);
 };
 
+class Mux : private Operation {
+private:
+	string sel;
+};
 
 #endif

@@ -4,12 +4,20 @@ using namespace std;
 
 Operation::Operation() {
 	type = "unknown";
-	latency = 999;
+	delay = 999;
+	input1 = "unknown";
+	input2 = "unknown";
+	output = "unknown";
+	vertex = 999;
 }
 
-Operation::Operation(string t, int l) {
+Operation::Operation(string t, int d, int v, string i1, string i2, string o) {
 	type = t;
-	latency = l;
+	delay = d;
+	input1 = i1;
+	input2 = i2;
+	output = o;
+	vertex = v;
 }
 
 Operation::~Operation() {};
@@ -18,14 +26,14 @@ void Operation::setType(string t) {
 	type = t;
 }
 
-void Operation::setLatency(int l) {
-	latency = l;
+void Operation::setDelay(int d) {
+	delay = d;
 }
 
 string Operation::getType() {
 	return type;
 }
 
-int Operation::getLatency() {
-	return latency;
+int Operation::getDelay() {
+	return delay;
 }
