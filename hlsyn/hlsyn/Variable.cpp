@@ -73,3 +73,7 @@ void Variable::parseDataType(string s) {
 		this->sign = false;
 	}
 }
+
+string Variable::getType() {
+	return type;
+}

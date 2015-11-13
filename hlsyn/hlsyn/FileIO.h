@@ -13,10 +13,7 @@
 
 using namespace std;
 
-
-int readfile(char* file, vector<Variable> &v, vector<Operation*> &o);
-
-
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o);
 
 
 #endif

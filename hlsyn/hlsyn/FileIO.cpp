@@ -1,7 +1,7 @@
 #include "FileIO.h"
 
 
-int readfile(char* file, vector<Variable> &v, vector<Operation*> &o) {
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 	ifstream a_file(file);
 	string line;
 	int vertex = 1;
@@ -40,7 +40,7 @@ int readfile(char* file, vector<Variable> &v, vector<Operation*> &o) {
 
 				for (vector<int>::size_type i = 0; i != var.size(); i++) {
 					Variable *temp = new Variable(var[i], tokens[0], tokens[1]);
-					v.push_back(*temp);
+					v.push_back(temp);
 				}
 
 			}
@@ -71,14 +71,14 @@ int readfile(char* file, vector<Variable> &v, vector<Operation*> &o) {
 						Variable input2;
 						Variable output;
 						for (int i = 0; i < v.size(); i++) {
-							if ((v[i].getVar().compare(tokens[2])) == 0) { //Input1
-								input1 = v[i];
+							if ((v[i]->getVar().compare(tokens[2])) == 0) { //Input1
+								input1 = *v[i];
 							}
-							else if ((v[i].getVar().compare(tokens[4])) == 0) { //Input2
-								input2 = v[i];
+							else if ((v[i]->getVar().compare(tokens[4])) == 0) { //Input2
+								input2 = *v[i];
 							}
-							else if ((v[i].getVar().compare(tokens[0])) == 0) { //output
-								output = v[i];
+							else if ((v[i]->getVar().compare(tokens[0])) == 0) { //output
+								output = *v[i];
 							}
 						}
 						Operation *otemp = new Operation(tokens[3], delay, vertex, input1, input2, output); //Put in a vector for now, can pre schedule here
@@ -97,21 +97,20 @@ int readfile(char* file, vector<Variable> &v, vector<Operation*> &o) {
 						Variable sel;
 						Variable output;
 						for (int i = 0; i < v.size(); i++) {
-							if ((v[i].getVar().compare(tokens[2])) == 0) { //sel
-								sel = v[i];
+							if ((v[i]->getVar().compare(tokens[2])) == 0) { //sel
+								sel = *v[i];
 							}
-							else if ((v[i].getVar().compare(tokens[4])) == 0) { //Input1
-								input1 = v[i];
+							else if ((v[i]->getVar().compare(tokens[4])) == 0) { //Input1
+								input1 = *v[i];
 							}
-							else if ((v[i].getVar().compare(tokens[6])) == 0) { //Input2
-								input2 = v[i];
+							else if ((v[i]->getVar().compare(tokens[6])) == 0) { //Input2
+								input2 = *v[i];
 							}
-							else if ((v[i].getVar().compare(tokens[0])) == 0) { //output
-								output = v[i];
+							else if ((v[i]->getVar().compare(tokens[0])) == 0) { //output
+								output = *v[i];
 							}
 						}
 						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel); //Put in a vector for now, can pre schedule here
-						cout << static_cast<Mux*>(mtemp)->GetSel().getVar() << endl;
 						vertex++;
 						o.push_back(mtemp);
 					}

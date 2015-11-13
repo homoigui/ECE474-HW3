@@ -15,7 +15,8 @@ protected:
 	Variable input2;
 	int delay;
 	int vertex;
-	vector<Operation> child;
+	int time;
+	vector<Operation*> child;
 public:
 	Operation();
 	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o);
@@ -24,6 +25,13 @@ public:
 	int getDelay();
 	void setType(string t);
 	void setDelay(int d);
+	void AddChild(Operation* node);
+	vector<Operation*> getChild();
+	void setTime(int t);
+	int getTime();
+	Variable getInput1();
+	Variable getInput2();
+	Variable getOutput();
 	//virtual Variable GetSel(){}
 };
 
