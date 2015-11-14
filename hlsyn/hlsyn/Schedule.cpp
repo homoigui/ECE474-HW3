@@ -76,10 +76,7 @@ bool Schedule::ALAP(int latency) {
 			}
 		}
 	}
-	
 
-
-	
 	return true;
 }
 
