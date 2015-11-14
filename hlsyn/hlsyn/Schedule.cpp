@@ -89,11 +89,16 @@ void Schedule::listR(int latency) {	//performs scheduling task listR
 					scheduledOps.push_back(candOps[j]);
 					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
 					
-
-					if (candOps[j]->getType().compare("a") == 0)//update resource counter
+					if (candOps[j]->getType().compare("a") == 0) {//update resource counter
 						alu++;
-					else
+						if (resource[i].type == 'a' && alu > resource[i].amount)
+							resource[i].type = alu;
+					}
+					else {
 						mul++;
+						if (resource[i].type == 'm' && mul > resource[i].amount)
+							resource[i].type = mul;
+					}
 				}
 			}
 			for (int j = 0; j < candOps.size(); j++) { //schedule ops requiring no additional resources, remove vertex and add it to teh scheduled ops vector
