@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		int latency = *argv[2] - '0'; //converts the latency to int
 		cout << "place holder" << endl;
 		if (read == 0) { // No errors
-			HLSM = new Schedule(o);
+			HLSM = new Schedule(o, latency);
 			HLSM->listR(latency);
 
 		}

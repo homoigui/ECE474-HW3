@@ -17,13 +17,15 @@ private:
 	vector<Operation*> vertex;
 	vector<resource_struct> resource;
 	Operation *nop; //top
+	Operation *sink; //bottom
 	void SetResource();
-	bool ALAP();
+	bool ALAP(int latency);
 	void UnscheduleSequencingGraph();
 	void USGSupport(Operation *o, vector<Operation*> v);
+	int checkMinCycle(Operation* o);
 public:
 	Schedule();
-	Schedule(vector<Operation*> v);
+	Schedule(vector<Operation*> v, int latency);
 	vector<Operation*> getVertices();
 	void listR(int latency);
 };

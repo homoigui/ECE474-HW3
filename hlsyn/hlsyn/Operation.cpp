@@ -4,7 +4,7 @@ using namespace std;
 
 Operation::Operation() {
 	type = "nop";
-	delay = -1;
+	delay = 0;
 	vertex = -1;
 	time = 0;
 }
