@@ -7,6 +7,8 @@ Operation::Operation() {
 	delay = -1;
 	vertex = -1;
 	time = 0;
+	slack = -1;
+	isScheduled = false;
 }
 
 Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o) {
@@ -17,6 +19,8 @@ Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable 
 	output = o;
 	vertex = v;
 	time = -1;
+	slack = -1;
+	isScheduled = false;
 }
 
 Operation::~Operation() {};
@@ -29,6 +33,8 @@ Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable 
 	output = o;
 	vertex = v;
 	sel = s;
+	slack = -1;
+	isScheduled = false;
 }
 
 Variable Mux::GetSel() {
@@ -76,4 +82,43 @@ Variable Operation::getOutput() {
 
 vector<Operation*> Operation::getChild() {
 	return child;
+}
+
+void Operation::setSlack(int timestep) {
+	slack = time - timestep;
+}
+
+int Operation::getSlack() {
+	return slack;
+}
+
+void Operation::setBeginTime(int t) {
+	beginTime = t;
+}
+
+void Operation::setEndTime(int t) {
+	endTime = t;
+}
+
+int Operation::getBeginTime() {
+	return beginTime;
+}
+
+int Operation::getEndTime() {
+	return endTime;
+}
+
+bool Operation::isALU() {
+	if (type.compare("*") == 0)
+		return false;
+	else
+		return true;
+}
+
+bool Operation::isMUL() {
+	if (type.compare("*") == 0)
+		return true;
+	else
+		return false;
+
 }

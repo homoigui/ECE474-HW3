@@ -16,7 +16,11 @@ protected:
 	int delay;
 	int vertex;
 	int time;
+	int beginTime;
+	int endTime;
+	int slack;
 	vector<Operation*> child;
+
 public:
 	Operation();
 	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o);
@@ -29,10 +33,19 @@ public:
 	vector<Operation*> getChild();
 	void setTime(int t);
 	int getTime();
+	void setSlack(int timestep);
+	int getSlack();
 	Variable getInput1();
 	Variable getInput2();
 	Variable getOutput();
 	//virtual Variable GetSel(){}
+	bool isScheduled;
+	int getBeginTime();
+	int getEndTime();
+	void setBeginTime(int t);
+	void setEndTime(int t);
+	bool isALU();
+	bool isMUL();
 };
 
 class Mux : public Operation {
