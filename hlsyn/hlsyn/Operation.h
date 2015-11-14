@@ -20,7 +20,7 @@ protected:
 	int endTime;
 	int slack;
 	vector<Operation*> child;
-
+	vector<Operation*> parent;
 public:
 	Operation();
 	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o);
@@ -31,6 +31,8 @@ public:
 	void setDelay(int d);
 	void AddChild(Operation* node);
 	vector<Operation*> getChild();
+	void AddParent(Operation* node);
+	vector<Operation*> getParent();
 	void setTime(int t);
 	int getTime();
 	void setSlack(int timestep);
@@ -46,6 +48,7 @@ public:
 	void setEndTime(int t);
 	bool isALU();
 	bool isMUL();
+	bool operator<(Operation rhs) { return slack < rhs.slack; }
 };
 
 class Mux : public Operation {

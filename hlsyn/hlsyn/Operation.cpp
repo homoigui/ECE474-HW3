@@ -60,6 +60,18 @@ void Operation::AddChild(Operation* node) {
 	child.push_back(node);
 }
 
+vector<Operation*> Operation::getChild() {
+	return child;
+}
+
+void Operation::AddParent(Operation* node) {
+	parent.push_back(node);
+}
+
+vector<Operation*> Operation::getParent() {
+	return parent;
+}
+
 void Operation::setTime(int t) {
 	time = t;
 }
@@ -80,9 +92,6 @@ Variable Operation::getOutput() {
 	return output;
 }
 
-vector<Operation*> Operation::getChild() {
-	return child;
-}
 
 void Operation::setSlack(int timestep) {
 	slack = time - timestep;

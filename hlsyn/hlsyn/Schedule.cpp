@@ -11,8 +11,10 @@ Schedule::Schedule() {
 Schedule::Schedule(vector<Operation*> v, int latency) {
 	vertex = v;
 	nop = new Operation();
+	nop->isScheduled = true;
 	sink = new Operation();
 	sink->setTime(latency + 1);
+	sink->isScheduled = true;
 }
 
 void Schedule::SetResource() {
@@ -69,54 +71,69 @@ void Schedule::listR(int latency) {	//performs scheduling task listR
 	}
 	
 	//until every vertex is scheduled
-	while (!allScheduled) {
+	while (!allScheduled()) {
 		//update cand ops
+		bool isParentScheduled = true;
+		alu = 0;
+		mul = 0;
 		for (int i = 0; i < scheduledOps.size(); i++) {
 			if (timestep == scheduledOps[i]->getEndTime()) {
 				scheduledOps[i]->isScheduled = true;
 				for (int j = 0; j < scheduledOps[i]->getChild().size(); j++) { //add finished scheduled op's children to candOps
-					candOps.push_back(scheduledOps[i]->getChild()[j]);
+					for (int k = 0; k < scheduledOps[i]->getChild()[j]->getParent().size(); k++) {
+						if (scheduledOps[i]->getChild()[j]->getParent()[k]->isScheduled == false) { //All of the parent must be scheduled to be a candidate
+							isParentScheduled = false;
+						}
+					}
+					if (isParentScheduled) {
+						candOps.push_back(scheduledOps[i]->getChild()[j]);
+					}			
 				}
-				scheduledOps.erase(scheduledOps.begin() + i);
 			}
 		}
-		
+		sort(candOps.begin(), candOps.end()); //put least slack first
 		//schedule cand ops
 		for (int i = 0; i < resource.size(); i++) { //for each resource type
 			refreshSlacks(timestep); //compute slacks
 			for (int j = 0; j < candOps.size(); j++) {//schedule ops with zero slack, update resource counter, remove vertex and add it to the scheduled ops vector
-				if (candOps[j]->getSlack == 0) {
+				if (candOps[j]->getSlack() == 0) {
 					candOps[j]->setBeginTime(timestep); //schedule op
 					candOps[j]->setEndTime(candOps[j]->getBeginTime() + candOps[j]->getDelay());
 					scheduledOps.push_back(candOps[j]);
 					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
-					
+					j--;
 					if (candOps[j]->getType().compare("a") == 0) {//update resource counter
 						alu++;
-						if (resource[i].type == 'a' && alu > resource[i].amount)
+						if (resource[i].type == 'a' && alu > resource[i].amount) {
 							resource[i].type = alu;
+						}	
 					}
 					else {
 						mul++;
-						if (resource[i].type == 'm' && mul > resource[i].amount)
+						if (resource[i].type == 'm' && mul > resource[i].amount) {
 							resource[i].type = mul;
+						}						
 					}
 				}
 			}
 			for (int j = 0; j < candOps.size(); j++) { //schedule ops requiring no additional resources, remove vertex and add it to teh scheduled ops vector
 				if (candOps[j]->isALU() && resource[i].type == 'a' && alu < resource[i].amount) {
 					candOps[j]->setBeginTime(timestep); //schedule op
+					candOps[j]->setTime(timestep);
 					candOps[j]->setEndTime(candOps[j]->getBeginTime() + candOps[j]->getDelay());
 					scheduledOps.push_back(candOps[j]);
 					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
 					alu++;
+					j--;
 				}
 				else if (candOps[j]->isMUL() && resource[i].type == 'm' && mul < resource[i].amount) {
 					candOps[j]->setBeginTime(timestep); //schedule op
+					candOps[j]->setTime(timestep);
 					candOps[j]->setEndTime(candOps[j]->getBeginTime() + candOps[j]->getDelay());
 					scheduledOps.push_back(candOps[j]);
 					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
 					mul++;
+					j--;
 				}
 			}
 		}
@@ -153,10 +170,10 @@ bool Schedule::ALAP(int latency) {
 	vector < Operation*> scheduled;
 	scheduled.push_back(sink);
 	while (unscheduled.size() != 0) {
-		for (int i = 0; i < unscheduled.size(); i++) {
-			for (int j = 0; j < scheduled.size(); j++) {
+		for (int i = 0; i < unscheduled.size(); i++) { //For each vertex
+			for (int j = 0; j < scheduled.size(); j++) { //Finds something that is scheduled
 				if (unscheduled[i]->getChild()[0] == scheduled[j]) {
-					unscheduled[i]->setTime(scheduled[j]->getTime() - unscheduled[i]->getDelay());
+					unscheduled[i]->setTime(scheduled[j]->getTime() - unscheduled[i]->getDelay()); //time = time of sucessor - delay
 					scheduled.push_back(unscheduled[i]);
 					unscheduled.erase(unscheduled.begin() + i);
 					i--;
@@ -199,6 +216,7 @@ void Schedule::UnscheduleSequencingGraph() {
 		else{ //Everything else
 			if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0) {
 				nop->AddChild(v[i]);
+				v[i]->AddParent(nop);
 				v.erase(v.begin() + i);
 				i--;
 			}
@@ -235,6 +253,7 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 					}
 					if (!exist) {
 					o->AddChild(v[i]);
+					v[i]->AddParent(o);
 					USGSupport(v[i], v);
 				}
 			}
@@ -252,6 +271,7 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 					}
 					if (!exist) {
 					o->AddChild(v[i]);
+					v[i]->AddParent(o);
 					USGSupport(v[i], v);
 				}
 			}

@@ -3,6 +3,7 @@
 #define SCHEDULE_H
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "Operation.h"
 #include "Variable.h"
 //Connect operators here
