@@ -14,15 +14,15 @@ int main(int argc, char* argv[])
 {
 	vector<Variable*> v;
 	vector<Operation*> o;
-	Schedule *HLS;
+	Schedule *list_R;
 
 	if (argc == 4) {
 		int read = readfile(argv[1], v, o);
 		int latency = *argv[2] - '0'; //converts the latency to int
 		cout << "place holder" << endl;
 		if (read == 0) { // No errors
-			HLS = new Schedule(o, latency);
-			HLS->listR(latency);
+			list_R = new Schedule(o, latency);
+			list_R->listR(latency);
 
 		}
 		else if (read == -1) {
