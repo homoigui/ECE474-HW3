@@ -50,11 +50,13 @@ vector<Operation*> Schedule::getVertices() {
 }
 
 
-void Schedule::listR(int latency) {	//performs scheduling task listR
+int Schedule::listR(int latency) {	//performs scheduling task listR
 	//set resource type to 1 for all applicable resources, creat unscheduled graph, find alap times
 	SetResource();
 	UnscheduleSequencingGraph();
-	ALAP(latency);
+	if (!ALAP(latency)) {
+		return -1;
+	}
 
 	//set initial resource counters
 	int alu = 0;
@@ -139,6 +141,7 @@ void Schedule::listR(int latency) {	//performs scheduling task listR
 		}
 		timestep++;
 	}
+	return 0;
 }
 
 void Schedule::refreshSlacks(int timestep)

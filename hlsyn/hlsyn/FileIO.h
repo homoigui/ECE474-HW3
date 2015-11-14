@@ -7,13 +7,12 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
-#include "Bits.h"
 #include "Variable.h"
 #include "Operation.h"
 
 using namespace std;
 
 int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o);
-
+int checkVar(vector<Variable*> v, vector<Operation*> o);
 
 #endif

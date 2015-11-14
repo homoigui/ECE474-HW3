@@ -1,13 +1,16 @@
-input UInt16 a, b, c
+input Int32 a, b, c
 
-output UInt8 z
-output UInt16 x
+output Int32 z, x
 
-variable UInt8 d, e, f, g
+variable Int32 d, e, f, g, h
+variable UInt1 dLTe, dEQe  
 
 d = a + b
 e = a + c
-g = d > e
-z = g ? d : e
-f = a * c
-x = f - d  
+f = a - b  
+dEQe = d == e
+dLTe = d < e
+g = dLTe ? d : e 
+h = dEQe ? g : f 
+x = g << dLTe
+z = h >> dEQe

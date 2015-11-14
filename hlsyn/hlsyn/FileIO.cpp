@@ -135,4 +135,22 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 }
 
 
+int checkVar(vector<Variable*> v, vector<Operation*> o) {
+	vector<string> s;
+	for (int i = 0; i < o.size(); i++) {
+		if (!o[i]->getType().compare("?")) {
+			s.push_back(static_cast<Mux*>(o[i])->GetSel().getVar());
+		}
+		s.push_back(o[i]->getInput1().getVar());
+		s.push_back(o[i]->getInput2().getVar());
+		s.push_back(o[i]->getOutput().getVar());	
+	}
 
+	for (int i = 0; i < s.size(); i++) {
+		if (!s[i].compare("error")) { //found an error variable does not exist
+			return -9;
+		}
+	}
+	
+	return 0;
+}

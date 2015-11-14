@@ -3,8 +3,8 @@
 
 
 Variable::Variable(){
-	this->var = "";
-	this->type = "";
+	this->var = "error";
+	this->type = "error";
 	this->sign = false;
 	this->size = 0;
 }
