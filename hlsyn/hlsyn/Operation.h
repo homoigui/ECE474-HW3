@@ -2,6 +2,7 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 #include <vector>
+#include <algorithm>
 #include "Variable.h"
 
 
@@ -48,7 +49,12 @@ public:
 	void setEndTime(int t);
 	bool isALU();
 	bool isMUL();
-	bool operator<(Operation rhs) { return slack < rhs.slack; }
+	struct slackCompare {
+		bool operator()(const Operation *left, const Operation *right) {
+			return left->slack < right->slack;
+		}
+	};
+	
 };
 
 class Mux : public Operation {

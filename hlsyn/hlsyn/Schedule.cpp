@@ -79,12 +79,13 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 		alu = 0;
 		mul = 0;
 		for (int i = 0; i < scheduledOps.size(); i++) {
-			if (timestep == scheduledOps[i]->getEndTime()) {
+			if (timestep == scheduledOps[i]->getEndTime()) { //infinite loop ? h is not scheduled//////////////////////////////////////////////////////////////////
 				scheduledOps[i]->isScheduled = true;
 				for (int j = 0; j < scheduledOps[i]->getChild().size(); j++) { //add finished scheduled op's children to candOps
 					for (int k = 0; k < scheduledOps[i]->getChild()[j]->getParent().size(); k++) {
 						if (scheduledOps[i]->getChild()[j]->getParent()[k]->isScheduled == false) { //All of the parent must be scheduled to be a candidate
 							isParentScheduled = false;
+							break;
 						}
 					}
 					if (isParentScheduled) {
@@ -93,10 +94,11 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 				}
 			}
 		}
-		sort(candOps.begin(), candOps.end()); //put least slack first
+		
 		//schedule cand ops
 		for (int i = 0; i < resource.size(); i++) { //for each resource type
 			refreshSlacks(timestep); //compute slacks
+			std::sort(candOps.begin(), candOps.end(), Operation::slackCompare()); //put least slack first
 			for (int j = 0; j < candOps.size(); j++) {//schedule ops with zero slack, update resource counter, remove vertex and add it to the scheduled ops vector
 				if (candOps[j]->getSlack() == 0) {
 					candOps[j]->setBeginTime(timestep); //schedule op
@@ -249,17 +251,18 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 					for (int j = 0; j < o->getChild().size(); j++) {
 						if (!o->getChild()[j]->getOutput().getVar().compare(v[i]->getOutput().getVar())) {
 							exist = true;
+							break;
 						}
 						else {
 							exist = false;
 						}
 					}
 					if (!exist) {
-					o->AddChild(v[i]);
-					v[i]->AddParent(o);
-					USGSupport(v[i], v);
+						o->AddChild(v[i]);
+						v[i]->AddParent(o);
+						USGSupport(v[i], v);
+					}
 				}
-			}
 			}
 			else {
 				if (!var.compare(v[i]->getInput1().getVar()) || !var.compare(v[i]->getInput2().getVar())) {
@@ -267,18 +270,19 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 					for (int j = 0; j < o->getChild().size(); j++) {
 						if (!o->getChild()[j]->getOutput().getVar().compare(v[i]->getOutput().getVar())) {
 							exist = true;
+							break;
 						}
 						else {
 							exist = false;
 						}
 					}
 					if (!exist) {
-					o->AddChild(v[i]);
-					v[i]->AddParent(o);
-					USGSupport(v[i], v);
+						o->AddChild(v[i]);
+						v[i]->AddParent(o);
+						USGSupport(v[i], v);
+					}
 				}
 			}
 		}
 	}
-}
 }
