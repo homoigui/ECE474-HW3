@@ -28,6 +28,8 @@ public:
 	Schedule(vector<Operation*> v, int latency);
 	vector<Operation*> getVertices();
 	void listR(int latency);
+	void refreshSlacks(int timestep);
+	bool allScheduled();
 };
 
 
