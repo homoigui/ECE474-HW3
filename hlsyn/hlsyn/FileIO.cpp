@@ -88,7 +88,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 						}
 
 						//set the scheduling level
-						otemp->setLevel(*level);
+						otemp->setLevel(level);
 						
 						vertex++;
 						o.push_back(otemp);
