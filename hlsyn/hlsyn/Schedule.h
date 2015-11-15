@@ -34,6 +34,7 @@ public:
 	int listR(int latency);
 	void refreshSlacks(int timestep);
 	bool allScheduled();
+	static void renewOperations(vector<vector<Operation*> > &o_list);
 };
 
 

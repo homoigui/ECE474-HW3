@@ -84,6 +84,7 @@ class Mux : public Operation {
 private:
 	Variable sel;
 public:
+	Mux();
 	Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r);
 	Variable GetSel();
 };

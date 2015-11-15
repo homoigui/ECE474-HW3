@@ -8,6 +8,8 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 	int numIF = 0;
 	int numElse = 0;
 	int uniqueNo = 0;
+	int noWrite = 0;
+	vector<int> un;
 	string conditionIF = "no condition";
 	vector<string> conditions;
 	vector<bool> el;
@@ -18,6 +20,10 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 			int comment = line.find("//"); //Erases comment
 			if (comment > 0) {
 				line.erase(line.begin() + comment, line.end());
+			}
+			comment = line.find("\t"); //tabs
+			if (comment >= 0) {
+				line.erase(line.begin() + comment, line.begin() + comment + 1);
 			}
 			istringstream iss(line);
 
@@ -52,7 +58,9 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 			}
 			else if (keyword.compare("if") == 0){ //an if statement
 				numIF++;
+				un.push_back(noWrite);
 				uniqueNo++;
+				noWrite = uniqueNo;
 				if (_else) {
 					el.push_back(_else);
 					_else = false;
@@ -68,12 +76,23 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 				}
 				else {
 					_else = false;
+					if (el.size() != 0) {
+						_else = el.back();
+						el.pop_back();
+					}
 					numElse--;
 				}
+				noWrite = un.back();
+				un.pop_back();
 			}
 			else if (keyword.compare("else") == 0) {
 				numElse++;
+				un.push_back(noWrite);
 				uniqueNo++;
+				noWrite = uniqueNo;
+				if (_else) {
+					el.push_back(_else);
+				}
 				_else = true;
 			}
 			else if (tokens.size() != 0) {
@@ -124,7 +143,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						otemp->setConditionIF(conditionIF);
 						otemp->setNumElse(numElse);
 						otemp->_else = _else;
-						otemp->uniqueNo = uniqueNo;
+						otemp->uniqueNo = noWrite;
 						o.push_back(otemp);
 				
 					}
@@ -158,7 +177,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						mtemp->setNumElse(numElse);
 						mtemp->setConditionIF(conditionIF);
 						mtemp->_else = _else;
-						mtemp->uniqueNo = uniqueNo;
+						mtemp->uniqueNo = noWrite;
 						o.push_back(mtemp);
 					}
 					else {

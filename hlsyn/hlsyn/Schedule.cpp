@@ -63,9 +63,15 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 	//set resource type to 1 for all applicable resources, creat unscheduled graph, find alap times
 	SetResource();
 	UnscheduleSequencingGraph();
+
 	if (!ALAP(latency)) {
 		return -1;
 	}
+
+	//Debug purpose
+	//for (int i = 0; i < vertex.size(); i++) {
+	//	cout << vertex[i]->getType() << " time:  " << vertex[i]->getTime() << endl;
+	//}
 
 	//set initial resource counters
 	int alu = 0;
@@ -324,6 +330,13 @@ void Schedule::UnscheduleSequencingGraph() {
 			sink->AddParent(vertex[i]);
 		}
 	}
+	//new code
+	for (unsigned int i = 0; i < vertex.size(); i++) {
+		if (vertex[i]->getChild().size() == 0) {
+			vertex[i]->AddChild(sink);
+			sink->AddParent(vertex[i]);
+		}
+	}
 }
 
 void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
@@ -373,4 +386,25 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 			}
 		}
 	}
+}
+
+void Schedule::renewOperations(vector<vector<Operation*> > &o_list) {
+	vector<vector<Operation*> > o_list_new;
+	for (unsigned int i = 0; i < o_list.size(); i++) {
+		vector<Operation*> op_new;
+		for (unsigned int j = 0; j < o_list[i].size(); j++) {
+			if (o_list[i][j]->getType().compare("?") == 0) { //if mux
+				Operation* op = new Mux();
+				*op = *o_list[i][j];
+				op_new.push_back(op);
+			}
+			else {
+				Operation* op = new Operation();
+				*op = *o_list[i][j];
+				op_new.push_back(op);
+			}
+		}
+		o_list_new.push_back(op_new);
+	}
+	o_list.swap(o_list_new);
 }

@@ -39,6 +39,10 @@ Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable 
 	resourceType = r;
 }
 
+Mux::Mux() {
+	
+}
+
 Variable Mux::GetSel() {
 	return sel;
 }
@@ -167,28 +171,32 @@ int Operation::getNumElse() {
 class tree {
 public:
 	vector<Operation*> main;
-	int maxIf;
-	int maxElse;
-	int maxUnique;
+	int noIF;
+	int noELSE;
+	int noUNIQUE;
+	bool _else;
 	tree* left;
 	tree* right;
-	tree(vector<Operation*> m, int i, int e, int u) {
+	tree(vector<Operation*> m, int i, int e, int u, bool lse) {
 		main = m;
-		maxIf = i;
-		maxElse = e;
-		maxUnique = u;
+		noIF = i;
+		noELSE = e;
+		noUNIQUE = u;
+		_else = lse;
+		left = NULL;
+		right = NULL;
 	}
 };
 void seperateOperatorHelper(vector<tree*> &t, tree* head) {
 	for (unsigned int i = 0; i < t.size(); i++) {
-		if (t[i]->maxIf - 1 == head->maxIf && head->maxUnique + 1 == t[i]->maxUnique) {
+		if (t[i]->noIF - 1 == head->noIF && !t[i]->_else && t[i]->noELSE == head->noELSE) {
 			head->left = t[i];
 			t.erase(t.begin() + i);
 			i--;
 			seperateOperatorHelper(t, head->left);
 			
 		}
-		else if (t[i]->maxElse - 1 == head->maxIf) {
+		else if (t[i]->noELSE - 1 == head->noELSE && t[i]->_else && t[i]->noIF == head->noIF) {
 			head->right = t[i];
 			t.erase(t.begin() + i);
 			i--;
@@ -196,6 +204,46 @@ void seperateOperatorHelper(vector<tree*> &t, tree* head) {
 		}
 	}
 }
+
+void seperateOperatorHelper2(vector<vector<Operation*> > &o_list, tree* node, vector<Operation*> &list) {
+	list.insert(list.end(), node->main.begin(), node->main.end());
+	if (node->left == NULL && node->right == NULL) {
+		o_list.push_back(list);
+		for (unsigned int i = 0; i < node->main.size(); i++) {
+			list.pop_back();
+		}
+		return;
+	}
+	if (node->left != NULL) {
+		seperateOperatorHelper2(o_list, node->left, list);
+
+		
+		delete node->left;
+		node->left = NULL;
+		
+		
+
+		if (node->left == NULL && node->right == NULL) {
+			o_list.push_back(list);
+			for (unsigned int i = 0; i < node->main.size(); i++) {
+				list.pop_back();
+			}
+		}
+	}
+	if (node->right != NULL) {
+		seperateOperatorHelper2(o_list, node->right, list);
+
+		if (node->right != NULL) {
+			delete node->right;
+			node->right = NULL;
+		}
+
+		for (unsigned int i = 0; i < node->main.size(); i++) {
+			list.pop_back();
+		}
+	}
+}
+
 void Operation::seperateOperator(vector<vector<Operation*> > &o_list, vector<Operation*> o) {
 	
 	
@@ -219,22 +267,35 @@ void Operation::seperateOperator(vector<vector<Operation*> > &o_list, vector<Ope
 		for (unsigned int j = 0; j <= elseMax; j++) {
 			for (unsigned int k = 0; k <= ifMax; k++) {
 				vector<Operation*> stuff;
+				bool _else = false;
 				for (unsigned int l = 0; l < o.size(); l++) {
-					if (o[l]->getNumElse() == j && o[l]->getNumIF() == k && o[l]->uniqueNo == i) {
+					if (o[l]->getNumElse() == j && o[l]->getNumIF() == k && o[l]->uniqueNo == i) { //Seperates operators with the same ID number to a list
+						if (o[l]->_else) {
+							_else = true;
+						}
 						stuff.push_back(o[l]);
 					}
 				}
 				if (stuff.size() != 0) {
-					top.push_back(new tree(stuff, k, j, i));
+					if (_else) {
+						top.push_back(new tree(stuff, k, j, i, true));
+					}
+					else {
+						top.push_back(new tree(stuff, k, j, i, false));
+					}
+					
 				}
 			}
 		}
 	}
 	tree* head = top[0];
 	top.erase(top.begin());
-	seperateOperatorHelper(top, head);
-	cout << endl;
+	seperateOperatorHelper(top, head); //Creates an IF ELSE tree
+	vector<Operation*> list;
+	seperateOperatorHelper2(o_list, head, list); //Transverse the tree that make sense
 }
+
+
 
 /*if (o[j]->getNumIF() == 0 && o[j]->getNumElse() == 0) {
 temp.push_back(o[j]);
