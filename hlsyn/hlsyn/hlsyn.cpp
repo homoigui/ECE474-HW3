@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
 			//initialize each schedule
 			for (int i = 0; i < levels.size(); i++) {
-				schedules[i] = new Schedule(latency);
+				schedules.push_back(new Schedule(latency));
 
 				//add each operation of that scheduling level to that scheduling level
 				for (int j = 0; j < o.size(); j++) {
