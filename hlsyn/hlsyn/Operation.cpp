@@ -164,8 +164,42 @@ int Operation::getNumElse() {
 	return numElse;
 }
 
+class tree {
+public:
+	vector<Operation*> main;
+	int maxIf;
+	int maxElse;
+	int maxUnique;
+	tree* left;
+	tree* right;
+	tree(vector<Operation*> m, int i, int e, int u) {
+		main = m;
+		maxIf = i;
+		maxElse = e;
+		maxUnique = u;
+	}
+};
+void seperateOperatorHelper(vector<tree*> &t, tree* head) {
+	for (unsigned int i = 0; i < t.size(); i++) {
+		if (t[i]->maxIf - 1 == head->maxIf && head->maxUnique + 1 == t[i]->maxUnique) {
+			head->left = t[i];
+			t.erase(t.begin() + i);
+			i--;
+			seperateOperatorHelper(t, head->left);
+			
+		}
+		else if (t[i]->maxElse - 1 == head->maxIf) {
+			head->right = t[i];
+			t.erase(t.begin() + i);
+			i--;
+			seperateOperatorHelper(t, head->right);
+		}
+	}
+}
 void Operation::seperateOperator(vector<vector<Operation*> > &o_list, vector<Operation*> o) {
-	vector<vector<Operation*> > seperation;
+	
+	
+	vector<tree*> top;
 	int ifMax = 0;
 	int elseMax = 0;
 	int uniqueMax = 0;
@@ -191,28 +225,17 @@ void Operation::seperateOperator(vector<vector<Operation*> > &o_list, vector<Ope
 					}
 				}
 				if (stuff.size() != 0) {
-					seperation.push_back(stuff);
+					top.push_back(new tree(stuff, k, j, i));
 				}
 			}
 		}
 	}
-	vector<Operation*> start = seperation[0];
-	seperation.erase(seperation.begin());
-	while (seperation.size() != 0) {
-		for (unsigned int i = 0; i < seperation.size(); i++) {
-			if (seperation[i][0]->getNumIF() - 1 == start[0]->getNumIF()) {
-				
-			}
-		}
-	}
-	for (unsigned int i = 0; i < seperation.size(); i++) {
-
-	}
+	tree* head = top[0];
+	top.erase(top.begin());
+	seperateOperatorHelper(top, head);
 	cout << endl;
 }
-void seperateOperatorHelper(vector<vector<Operation*> > &seperation, vector<Operation*> &start) {
 
-}
 /*if (o[j]->getNumIF() == 0 && o[j]->getNumElse() == 0) {
 temp.push_back(o[j]);
 }
