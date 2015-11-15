@@ -11,6 +11,7 @@ using namespace std;
 class Operation {
 protected:
 	string type;
+	char resourceType;
 	Variable output;
 	Variable input1;
 	Variable input2;
@@ -23,8 +24,18 @@ protected:
 	vector<Operation*> child;
 	vector<Operation*> parent;
 public:
+	struct slackCompare {
+		bool operator()(const Operation *left, const Operation *right) {
+			return left->slack < right->slack;
+		}
+	};
+	struct timeCompare {
+		bool operator()(const Operation *left, const Operation *right) {
+			return left->time < right->time;
+		}
+	};
 	Operation();
-	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o);
+	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o, char r);
 	~Operation();
 	string getType();
 	int getDelay();
@@ -49,19 +60,16 @@ public:
 	void setEndTime(int t);
 	bool isALU();
 	bool isMUL();
-	struct slackCompare {
-		bool operator()(const Operation *left, const Operation *right) {
-			return left->slack < right->slack;
-		}
-	};
-	
+	char getResourceType();
+	char color;
+	int dist;
 };
 
 class Mux : public Operation {
 private:
 	Variable sel;
 public:
-	Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s);
+	Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r);
 	Variable GetSel();
 };
 

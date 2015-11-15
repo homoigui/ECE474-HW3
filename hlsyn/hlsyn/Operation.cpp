@@ -11,7 +11,7 @@ Operation::Operation() {
 	isScheduled = false;
 }
 
-Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o) {
+Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o, char r) {
 	type = t;
 	delay = d;
 	input1 = i1;
@@ -21,11 +21,12 @@ Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable 
 	time = -1;
 	slack = -1;
 	isScheduled = false;
+	resourceType = r;
 }
 
 Operation::~Operation() {};
 
-Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s) {
+Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r) {
 	type = t;
 	delay = d;
 	input1 = i1;
@@ -35,6 +36,7 @@ Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable 
 	sel = s;
 	slack = -1;
 	isScheduled = false;
+	resourceType = r;
 }
 
 Variable Mux::GetSel() {
@@ -130,4 +132,8 @@ bool Operation::isMUL() {
 	else
 		return false;
 
+}
+
+char Operation::getResourceType() {
+	return resourceType;
 }

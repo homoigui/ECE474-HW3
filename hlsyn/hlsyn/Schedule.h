@@ -20,10 +20,12 @@ private:
 	Operation *nop; //top
 	Operation *sink; //bottom
 	void SetResource();
-	bool ALAP(int latency);
 	void UnscheduleSequencingGraph();
 	void USGSupport(Operation *o, vector<Operation*> v);
 	int checkMinCycle(Operation* o);
+	bool ALAP(int latency);
+	void TopologicalSort(vector<Operation*> &L);
+	void TSVisit(vector<Operation*> &L, Operation* u);
 public:
 	Schedule();
 	Schedule(vector<Operation*> v, int latency);

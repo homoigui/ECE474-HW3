@@ -14,15 +14,19 @@ int main(int argc, char* argv[])
 	vector<Variable*> v;
 	vector<Operation*> o;
 	Schedule *list_R;
-
+	string s = argv[2];
 	if (argc == 4) {
 		int read = readfile(argv[1], v, o);
 		read = checkVar(v, o);
-		int latency = *argv[2] - '0'; //converts the latency to int
+		int latency = stoi(s); //converts the latency to int
 
 		if (read == 0) { // No errors
 			list_R = new Schedule(o, latency);
 			int check = list_R->listR(latency);
+			sort(o.begin(), o.end(), Operation::timeCompare());
+			for (int i = 0; i < o.size(); i++) {
+				cout << o[i]->getType() << "   Time: " << o[i]->getTime() << endl;
+			}
 			if (check == -1) {
 				cout << "Invalid Latency constraint. Try a bigger latency" << endl;
 				return -1;

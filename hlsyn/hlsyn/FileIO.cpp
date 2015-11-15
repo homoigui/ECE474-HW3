@@ -70,7 +70,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						Variable input1;
 						Variable input2;
 						Variable output;
-						for (int i = 0; i < v.size(); i++) {
+						for (unsigned int i = 0; i < v.size(); i++) {
 							if ((v[i]->getVar().compare(tokens[2])) == 0) { //Input1
 								input1 = *v[i];
 							}
@@ -81,7 +81,14 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 								output = *v[i];
 							}
 						}
-						Operation *otemp = new Operation(tokens[3], delay, vertex, input1, input2, output); //Put in a vector for now, can pre schedule here
+						Operation *otemp;
+						if (tokens[3].compare("*") == 0) {
+							otemp = new Operation(tokens[3], delay, vertex, input1, input2, output, 'm'); //Put in a vector for now, can pre schedule here
+						}
+						else {
+							otemp = new Operation(tokens[3], delay, vertex, input1, input2, output, 'a');
+						}
+						
 						vertex++;
 						o.push_back(otemp);
 				
@@ -96,7 +103,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						Variable input2;
 						Variable sel;
 						Variable output;
-						for (int i = 0; i < v.size(); i++) {
+						for (unsigned int i = 0; i < v.size(); i++) {
 							if ((v[i]->getVar().compare(tokens[2])) == 0) { //sel
 								sel = *v[i];
 							}
@@ -110,7 +117,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 								output = *v[i];
 							}
 						}
-						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel); //Put in a vector for now, can pre schedule here
+						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel, 'a'); //Put in a vector for now, can pre schedule here
 						vertex++;
 						o.push_back(mtemp);
 					}
@@ -137,7 +144,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 
 int checkVar(vector<Variable*> v, vector<Operation*> o) {
 	vector<string> s;
-	for (int i = 0; i < o.size(); i++) {
+	for (unsigned int i = 0; i < o.size(); i++) {
 		if (!o[i]->getType().compare("?")) {
 			s.push_back(static_cast<Mux*>(o[i])->GetSel().getVar());
 		}
@@ -146,7 +153,7 @@ int checkVar(vector<Variable*> v, vector<Operation*> o) {
 		s.push_back(o[i]->getOutput().getVar());	
 	}
 
-	for (int i = 0; i < s.size(); i++) {
+	for (unsigned int i = 0; i < s.size(); i++) {
 		if (!s[i].compare("error")) { //found an error variable does not exist
 			return -9;
 		}
