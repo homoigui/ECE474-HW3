@@ -20,10 +20,10 @@ int main(int argc, char* argv[])
 		int latency = stoi(s); //converts the latency to int
 		int read = readfile(argv[1], v, o);
 		read = checkVar(v, o);
-		Operation::seperateOperator(o_list, o);
+		Operation::seperateOperator(o_list, o); //Gets different things for scheduling
 
 
-		Schedule::renewOperations(o_list);
+		Schedule::renewOperations(o_list); //Renew all pointers in this list so it doesn't write to the same one
 
 		if (read == 0) { // No errors
 			for (unsigned int i = 0; i < o_list.size(); i++) {

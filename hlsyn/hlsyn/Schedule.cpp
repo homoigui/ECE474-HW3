@@ -68,6 +68,12 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 		return -1;
 	}
 
+	if (vertex.size() == 1) {
+		vertex[0]->setTime(1);
+		vertex[0]->setBeginTime(1);
+		vertex[0]->setEndTime(vertex[0]->getDelay());
+		return 0;
+	}
 	//Debug purpose
 	//for (int i = 0; i < vertex.size(); i++) {
 	//	cout << vertex[i]->getType() << " time:  " << vertex[i]->getTime() << endl;
@@ -303,6 +309,13 @@ void Schedule::TSVisit(vector<Operation*> &L, Operation* u) {
 void Schedule::UnscheduleSequencingGraph() {
 	//Schedule Input First
 	vector<Operation*> v = vertex; //Make copy //Unschedule list
+	if (v.size() == 1) {
+		v[0]->AddChild(sink);
+		sink->AddParent(v[0]);
+		v[0]->AddParent(nop);
+		nop->AddChild(v[0]);
+		return;
+	}
 	for (unsigned int i = 0; i < v.size(); i++) {
 		if (!v[i]->getType().compare("?")) { //Its a mux!
 			if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0 && static_cast<Mux*>(v[i])->GetSel().getType().compare("input") == 0) {

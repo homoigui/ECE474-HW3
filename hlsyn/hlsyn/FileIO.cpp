@@ -57,6 +57,9 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 
 			}
 			else if (keyword.compare("if") == 0){ //an if statement
+				conditions.push_back(conditionIF);
+				conditionIF = tokens[2];
+
 				numIF++;
 				un.push_back(noWrite);
 				uniqueNo++;
@@ -69,6 +72,10 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 			else if (keyword.compare("}") == 0) {
 				if (!_else) {
 					numIF--;
+					
+					conditionIF = conditions.back();
+					conditions.pop_back();
+					
 					if (el.size() != 0) {
 						_else = el.back();
 						el.pop_back();
@@ -82,8 +89,8 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 					}
 					numElse--;
 				}
-				noWrite = un.back();
-				un.pop_back();
+				uniqueNo++;
+				noWrite = uniqueNo;
 			}
 			else if (keyword.compare("else") == 0) {
 				numElse++;
@@ -144,6 +151,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						otemp->setNumElse(numElse);
 						otemp->_else = _else;
 						otemp->uniqueNo = noWrite;
+						otemp->setConditionIF(conditionIF);
 						o.push_back(otemp);
 				
 					}
@@ -178,6 +186,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						mtemp->setConditionIF(conditionIF);
 						mtemp->_else = _else;
 						mtemp->uniqueNo = noWrite;
+						mtemp->setConditionIF(conditionIF);
 						o.push_back(mtemp);
 					}
 					else {
