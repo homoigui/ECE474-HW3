@@ -132,15 +132,14 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 			}
 		}
 
+		l.push_back(level); //push back final level
+		a_file.close();
 		return 0;
 	}
 	else {
 		//Else file does not exist
 		return -1;
 	}
-
-	l.push_back(level); //push back final level
-	a_file.close();
 }
 
 
