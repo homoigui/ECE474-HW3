@@ -38,10 +38,7 @@ int main(int argc, char* argv[])
 			//do this for each individual schedule
 			for (int i = 0; i < schedules.size(); i++) {
 				int check = schedules[i]->listR(latency);
-				sort(schedules[i]->getVertices().begin(), schedules[i]->getVertices().end(), Operation::timeCompare());
-				for (int j = 0; j < schedules[i]->getVertices().size(); j++) {
-					cout << schedules[i]->getVertices()[j]->getType() << "   Time: " << schedules[i]->getVertices()[j]->getTime() << endl;
-				}
+
 				if (check == -1) {
 					cout << "Invalid Latency constraint. Try a bigger latency" << endl;
 					return -1;
