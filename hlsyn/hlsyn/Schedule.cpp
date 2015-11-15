@@ -260,23 +260,26 @@ bool Schedule::ALAP(int latency) {
 int Schedule::checkMinCycle(Operation* o) {
 	vector<Operation*> L; //sorted Topologicallist
 	TopologicalSort(L);
+	L.push_back(sink);
 	for (unsigned int i = 0; i < L.size(); i++) {
-
+		L[i]->dist = 0;
 	}
-	//int current = 0;
-	//if (o->getChild().size() == 0) { //therminal node
-	//	return o->getDelay();
-	//}
-	//else {
-	//	for (unsigned int i = 0; i < o->getChild().size(); i++) {
-	//		int n = checkMinCycle(o->getChild()[i]);
-	//		if (n > current) {
-	//			current = n;
-	//		}
-	//	}
-	//	return o->getDelay() + current;
-	//}
-	return 0;
+	Operation* v;
+	for (unsigned int i = 0; i < L.size(); i++) {
+		for (unsigned int j = 0; j < L[i]->getChild().size(); j++) {
+			v = L[i]->getChild()[j];
+			if ((L[i]->dist + L[i]->getDelay()) > v->dist) {
+				v->dist = L[i]->dist + L[i]->getDelay();
+			}
+		}
+	}
+	int max = 0;
+	for (unsigned int i = 0; i < L.size(); i++) {
+		if (L[i]->dist > max) {
+			max = L[i]->dist;
+		}
+	}
+	return max;
 }
 
 void Schedule::TopologicalSort(vector<Operation*> &L) {
