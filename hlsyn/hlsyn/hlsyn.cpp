@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	vector<Variable*> v;
 	vector<Operation*> o;
 	vector<Schedule*> schedules;
-	vector<int*> levels;
+	vector<int> levels;
 	string s = argv[2];
 	if (argc == 4) {
 		int read = readfile(argv[1], v, o, levels);
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 
 				//add each operation of that scheduling level to that scheduling level
 				for (int j = 0; j < o.size(); j++) {
-					if (o[j]->getLevel() == *levels[i]) {
+					if (o[j]->getLevel() == levels[i]) {
 						schedules[i]->getVertices().push_back(o[j]);
 					}
 				}

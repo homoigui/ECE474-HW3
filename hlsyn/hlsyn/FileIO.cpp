@@ -1,11 +1,11 @@
 #include "FileIO.h"
 
 
-int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int*> &l) {
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int> &l) {
 	ifstream a_file(file);
 	string line;
 	int vertex = 1;
-	int *level = 0; //keeps track of the if/else nested level
+	int level = 0; //keeps track of the if/else nested level
 
 	if (a_file) {
 		//If File exist
@@ -47,7 +47,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 			}
 			else if (keyword.compare("if") == 0 || keyword.compare("else") == 0 || keyword.compare("}") == 0){ //an if statement
 				l.push_back(level);
-				*level++;//increase the scheduling level
+				level++;//increase the scheduling level
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
