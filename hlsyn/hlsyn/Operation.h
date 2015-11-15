@@ -75,6 +75,9 @@ public:
 	static void seperateOperator(vector<vector<Operation*> > &o_list, vector<Operation*> o);
 	int maxNest;
 	bool _else;
+	int uniqueNo;
+	vector<Operation*> *left;
+	vector<Operation*> *right;
 };
 
 class Mux : public Operation {

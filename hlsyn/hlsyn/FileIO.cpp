@@ -7,6 +7,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 	int vertex = 1;
 	int numIF = 0;
 	int numElse = 0;
+	int uniqueNo = 0;
 	string conditionIF = "no condition";
 	vector<string> conditions;
 	vector<bool> el;
@@ -50,35 +51,30 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 
 			}
 			else if (keyword.compare("if") == 0){ //an if statement
-				conditionIF = tokens[2];
-				conditions.push_back(conditionIF);
 				numIF++;
+				uniqueNo++;
 				if (_else) {
-					numIF = numElse + 1;
 					el.push_back(_else);
 					_else = false;
 				}
 			}
 			else if (keyword.compare("}") == 0) {
-				if (numIF == numElse - 1) {
-					numElse--;
-					_else = false;
-				}
-				else if (!_else) {
+				if (!_else) {
 					numIF--;
-					conditions.pop_back();
-					if (conditions.size() != 0) {	
-						conditionIF = conditions.back();
-					}
 					if (el.size() != 0) {
 						_else = el.back();
 						el.pop_back();
 					}
 				}
+				else {
+					_else = false;
+					numElse--;
+				}
 			}
 			else if (keyword.compare("else") == 0) {
+				numElse++;
+				uniqueNo++;
 				_else = true;
-				numElse = numIF + 1;
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
@@ -128,6 +124,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						otemp->setConditionIF(conditionIF);
 						otemp->setNumElse(numElse);
 						otemp->_else = _else;
+						otemp->uniqueNo = uniqueNo;
 						o.push_back(otemp);
 				
 					}
@@ -161,6 +158,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						mtemp->setNumElse(numElse);
 						mtemp->setConditionIF(conditionIF);
 						mtemp->_else = _else;
+						mtemp->uniqueNo = uniqueNo;
 						o.push_back(mtemp);
 					}
 					else {
