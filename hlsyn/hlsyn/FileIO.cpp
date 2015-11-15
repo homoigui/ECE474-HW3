@@ -1,12 +1,16 @@
 #include "FileIO.h"
 
 
-int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int> &l) {
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 	ifstream a_file(file);
 	string line;
 	int vertex = 1;
-	int level = 0; //keeps track of the if/else nested level
-
+	int numIF = 0;
+	int numElse = 0;
+	string conditionIF = "no condition";
+	vector<string> conditions;
+	vector<bool> el;
+	bool _else = false;
 	if (a_file) {
 		//If File exist
 		while (getline(a_file, line)) {
@@ -26,7 +30,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 			else {
 				keyword = tokens[0]; //First keyword
 			}
-
+			
 			//tokens[0] = input / output / variable, tokens[1] = dataType
 			if (keyword.compare("input") == 0 || keyword.compare("output") == 0 || keyword.compare("variable") == 0) { // Input is found
 				vector<string> var;
@@ -45,13 +49,41 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 				}
 
 			}
-			else if (keyword.compare("if") == 0 || keyword.compare("else") == 0 || keyword.compare("}") == 0){ //an if statement
-				l.push_back(level);
-				level++;//increase the scheduling level
+			else if (keyword.compare("if") == 0){ //an if statement
+				conditionIF = tokens[2];
+				conditions.push_back(conditionIF);
+				numIF++;
+				if (_else) {
+					el.push_back(_else);
+					_else = false;
+				}
+			}
+			else if (keyword.compare("}") == 0) {
+				if (numIF == numElse) {
+					numElse--;
+					_else = false;
+				}
+				else if (!_else) {
+					numIF--;
+					conditions.pop_back();
+					if (conditions.size() != 0) {	
+						conditionIF = conditions.back();
+					}
+					if (el.size() != 0) {
+						_else = el.back();
+						el.pop_back();
+					}
+				}
+			}
+			else if (keyword.compare("else") == 0) {
+				_else = true;
+				numElse++;
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
-				
+				if (numIF == 0) {
+					conditionIF = "no condition";
+				}
 
 				if (tokens[1].compare("=") != 0) {
 					return -3; //Nothing found
@@ -88,9 +120,13 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 						}
 
 						//set the scheduling level
-						otemp->setLevel(level);
+					
 						
 						vertex++;
+						otemp->setNumIF(numIF);
+						otemp->setConditionIF(conditionIF);
+						otemp->setNumElse(numElse);
+						otemp->_else = _else;
 						o.push_back(otemp);
 				
 					}
@@ -120,6 +156,10 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 						}
 						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel, 'a'); //Put in a vector for now, can pre schedule here
 						vertex++;
+						mtemp->setNumIF(numIF);
+						mtemp->setNumElse(numElse);
+						mtemp->setConditionIF(conditionIF);
+						mtemp->_else = _else;
 						o.push_back(mtemp);
 					}
 					else {
@@ -132,7 +172,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int
 			}
 		}
 
-		l.push_back(level); //push back final level
+
 		a_file.close();
 		return 0;
 	}

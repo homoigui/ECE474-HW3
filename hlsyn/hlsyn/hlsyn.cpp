@@ -13,37 +13,23 @@ int main(int argc, char* argv[])
 {
 	vector<Variable*> v;
 	vector<Operation*> o;
+	vector<vector<Operation*>> o_list;
 	vector<Schedule*> schedules;
-	vector<int> levels;
 	string s = argv[2];
 	if (argc == 4) {
-		int read = readfile(argv[1], v, o, levels);
-		read = checkVar(v, o);
 		int latency = stoi(s); //converts the latency to int
+		int read = readfile(argv[1], v, o);
+		read = checkVar(v, o);
+		Operation::seperateOperator(o_list, o);
 
 		if (read == 0) { // No errors
+			int check; // = schedules[i]->listR(latency);
 
-			//initialize each schedule
-			for (int i = 0; i < levels.size(); i++) {
-				schedules.push_back(new Schedule(latency));
-
-				//add each operation of that scheduling level to that scheduling level
-				for (int j = 0; j < o.size(); j++) {
-					if (o[j]->getLevel() == levels[i]) {
-						schedules[i]->getVertices().push_back(o[j]);
-					}
-				}
-			}
+			if (check == -1) {
+				cout << "Invalid Latency constraint. Try a bigger latency" << endl;
+				return -1;
+			}	
 			
-			//do this for each individual schedule
-			for (int i = 0; i < schedules.size(); i++) {
-				int check = schedules[i]->listR(latency);
-
-				if (check == -1) {
-					cout << "Invalid Latency constraint. Try a bigger latency" << endl;
-					return -1;
-				}
-			}
 		}
 		else if (read == -1) {
 			cout << "Could not open file" << endl;

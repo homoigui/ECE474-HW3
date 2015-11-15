@@ -66,12 +66,7 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 	if (!ALAP(latency)) {
 		return -1;
 	}
-	std::sort(vertex.begin(), vertex.end(), Operation::timeCompare());
 
-	for (int i = 0; i < vertex.size(); i++) {
-		cout << vertex[i]->getType() << "   Time: " << vertex[i]->getTime() << endl;
-	}
-	cout << endl << endl;
 	//set initial resource counters
 	int alu = 0;
 	int mul = 0;

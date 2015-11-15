@@ -138,10 +138,82 @@ char Operation::getResourceType() {
 	return resourceType;
 }
 
-int Operation::getLevel() {
-	return level;
+
+
+void Operation::setNumIF(int i) {
+	numIF = i;
 }
 
-void Operation::setLevel(int l) {
-	level = l;
+int Operation::getNumIF() {
+	return numIF;
 }
+
+void Operation::setConditionIF(string s) {
+	conditionIF = s;
+}
+
+string Operation::getConditionIF() {
+	return conditionIF;
+}
+
+void Operation::setNumElse(int e) {
+	numElse = e;
+}
+
+int Operation::getNumElse() {
+	return numElse;
+}
+
+void Operation::seperateOperator(vector<vector<Operation*> > &o_list, vector<Operation*> o) {
+	vector<vector<Operation*> > list;
+	
+}
+
+/*if (o[j]->getNumIF() == 0 && o[j]->getNumElse() == 0) {
+temp.push_back(o[j]);
+}
+if (o[j]->getNumElse() - 1 == i && o[j]->getNumIF() - 1 == i) {
+temp.push_back(o[j]);
+}
+if (o[j]->getNumIF() <= i && o[j]->getConditionIF().compare("no condition") != 0 && o[j]->getNumElse() - 1 != i) {
+temp.push_back(o[j]);
+}*/
+
+	/*int max = 0;
+	for (unsigned int i = 0; i < o.size(); i++) {
+		if (o[i]->getNumIF() > max) {
+			max = o[i]->getNumIF();
+		}
+	}
+	for (unsigned int i = 0; i < o.size(); i++) {
+		o[i]->maxNest = max;
+	}
+	for (unsigned int i = 0; i <= max; i++) {
+		vector<Operation*> stuff;
+		for (unsigned int j = 0; j < o.size(); j++) {
+			if (o[j]->getNumIF() == i) {
+				stuff.push_back(o[j]);
+			}
+			if (o[j]->getNumIF() == i && o[j]->getNumElse() - 1 == i) {
+				stuff.push_back(o[j]);
+			}
+		}
+		list.push_back(stuff);
+	}
+
+	vector<Operation*> base;
+	for (unsigned int j = 0; j < o.size(); j++) {
+		if (o[j]->getNumIF() == 0 && o[j]->getNumElse() == 0) {
+			base.push_back(o[j]);
+		}
+	}
+	o_list.push_back(base);
+	for (unsigned int i = 1; i <= max; i++) {
+		vector<Operation*> ifelse = base;
+		for (unsigned int j = 0; j < o.size(); j++) {
+			if (o[j]->getNumIF() <= i) {
+				ifelse.push_back(o[j]);
+			}
+		}
+
+	}*/

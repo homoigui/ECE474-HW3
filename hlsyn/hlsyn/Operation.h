@@ -21,7 +21,9 @@ protected:
 	int beginTime;
 	int endTime;
 	int slack;
-	int level;
+	int numIF;
+	int numElse;
+	string conditionIF;
 	vector<Operation*> child;
 	vector<Operation*> parent;
 public:
@@ -64,8 +66,15 @@ public:
 	char getResourceType();
 	char color;
 	int dist;
-	int getLevel();
-	void setLevel(int l);
+	void setNumIF(int i);
+	int getNumIF();
+	void setConditionIF(string s);
+	string getConditionIF();
+	void setNumElse(int e);
+	int getNumElse();
+	static void seperateOperator(vector<vector<Operation*> > &o_list, vector<Operation*> o);
+	int maxNest;
+	bool _else;
 };
 
 class Mux : public Operation {
