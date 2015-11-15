@@ -137,3 +137,11 @@ bool Operation::isMUL() {
 char Operation::getResourceType() {
 	return resourceType;
 }
+
+int Operation::getLevel() {
+	return level;
+}
+
+void Operation::setLevel(int l) {
+	level = l;
+}

@@ -28,6 +28,7 @@ private:
 	void TSVisit(vector<Operation*> &L, Operation* u);
 public:
 	Schedule();
+	Schedule(int latency);
 	Schedule(vector<Operation*> v, int latency);
 	vector<Operation*> getVertices();
 	int listR(int latency);

@@ -21,6 +21,7 @@ protected:
 	int beginTime;
 	int endTime;
 	int slack;
+	int level;
 	vector<Operation*> child;
 	vector<Operation*> parent;
 public:
@@ -63,6 +64,8 @@ public:
 	char getResourceType();
 	char color;
 	int dist;
+	int getLevel();
+	void setLevel(int l);
 };
 
 class Mux : public Operation {

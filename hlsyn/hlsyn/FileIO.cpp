@@ -1,10 +1,11 @@
 #include "FileIO.h"
 
 
-int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int*> &l) {
 	ifstream a_file(file);
 	string line;
 	int vertex = 1;
+	int *level = 0; //keeps track of the if/else nested level
 
 	if (a_file) {
 		//If File exist
@@ -44,13 +45,10 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 				}
 
 			}
-			//else if (keyword.compare("if") == 0) { //an if statement
-			//	//perform actions here if evaluates to true then skip else lines
-			//	//ifTaken = true;
-			//}
-			//else if (keyword.compare("else") == 0) { //an if statement (else)
-			//	//perform actions here if(ifTaken) == false
-			//}
+			else if (keyword.compare("if") == 0 || keyword.compare("else") == 0 || keyword.compare("}") == 0){ //an if statement
+				l.push_back(level);
+				*level++;//increase the scheduling level
+			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands
 				
@@ -88,6 +86,9 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 						else {
 							otemp = new Operation(tokens[3], delay, vertex, input1, input2, output, 'a');
 						}
+
+						//set the scheduling level
+						otemp->setLevel(*level);
 						
 						vertex++;
 						o.push_back(otemp);
@@ -138,6 +139,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 		return -1;
 	}
 
+	l.push_back(level); //push back final level
 	a_file.close();
 }
 

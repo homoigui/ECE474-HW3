@@ -6,7 +6,15 @@
 using namespace std;
 
 Schedule::Schedule() {
-	vector<Operation> vertices;
+
+}
+
+Schedule::Schedule(int latency) {
+	nop = new Operation();
+	nop->isScheduled = true;
+	sink = new Operation();
+	sink->setTime(latency + 1);
+	sink->isScheduled = true;
 }
 
 Schedule::Schedule(vector<Operation*> v, int latency) {
@@ -114,22 +122,6 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 				}
 			}
 		}
-		//for (int i = 0; i < scheduledOps.size(); i++) {
-		//	if (timestep == scheduledOps[i]->getEndTime()) { //infinite loop ? h is not scheduled//////////////////////////////////////////////////////////////////
-		//		scheduledOps[i]->isScheduled = true;	
-		//	}
-		//	for (int j = 0; j < scheduledOps[i]->getChild().size(); j++) { //add finished scheduled op's children to candOps
-		//		for (int k = 0; k < scheduledOps[i]->getChild()[j]->getParent().size(); k++) {
-		//			if (scheduledOps[i]->getChild()[j]->getParent()[k]->isScheduled == false) { //All of the parent must be scheduled to be a candidate
-		//				isParentScheduled = false;
-		//				break;
-		//			}
-		//		}
-		//		if (isParentScheduled) {
-		//			candOps.push_back(scheduledOps[i]->getChild()[j]);
-		//		}
-		//	}
-		//}
 		
 		//schedule cand ops
 		for (unsigned int i = 0; i < resource.size(); i++) { //for each resource type
@@ -143,13 +135,13 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 					if (candOps[j]->getResourceType() == 'a') {//update resource counter
 						alu++;
 						if (resource[i].type == 'a' && alu > resource[i].amount) {
-							resource[i].type = alu;
+							resource[i].amount = alu;
 						}	
 					}
 					else if(candOps[j]->getResourceType() == 'm') {
 						mul++;
 						if (resource[i].type == 'm' && mul > resource[i].amount) {
-							resource[i].type = mul;
+							resource[i].amount = mul;
 						}						
 					}
 					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
