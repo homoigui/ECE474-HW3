@@ -54,12 +54,13 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 				conditions.push_back(conditionIF);
 				numIF++;
 				if (_else) {
+					numIF = numElse + 1;
 					el.push_back(_else);
 					_else = false;
 				}
 			}
 			else if (keyword.compare("}") == 0) {
-				if (numIF == numElse) {
+				if (numIF == numElse - 1) {
 					numElse--;
 					_else = false;
 				}
@@ -77,7 +78,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 			}
 			else if (keyword.compare("else") == 0) {
 				_else = true;
-				numElse++;
+				numElse = numIF + 1;
 			}
 			else if (tokens.size() != 0) {
 				//The rest of the commands

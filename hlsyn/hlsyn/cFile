@@ -26,5 +26,11 @@ if ( csa1 ) {
       if ( csa3 ) {
          avg = t7div4 >> one
       }
+	  else {
+		fuck = fuck + you
+	  }
    }
+}
+else {
+	fuck = fuck + me
 }
