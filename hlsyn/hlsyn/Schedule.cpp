@@ -6,7 +6,15 @@
 using namespace std;
 
 Schedule::Schedule() {
-	vector<Operation> vertices;
+
+}
+
+Schedule::Schedule(int latency) {
+	nop = new Operation();
+	nop->isScheduled = true;
+	sink = new Operation();
+	sink->setTime(latency + 1);
+	sink->isScheduled = true;
 }
 
 Schedule::Schedule(vector<Operation*> v, int latency) {

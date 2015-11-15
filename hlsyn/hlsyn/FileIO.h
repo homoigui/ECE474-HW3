@@ -12,7 +12,7 @@
 
 using namespace std;
 
-int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o);
+int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o, vector<int*> &l);
 int checkVar(vector<Variable*> v, vector<Operation*> o);
 
 #endif

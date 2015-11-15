@@ -13,25 +13,40 @@ int main(int argc, char* argv[])
 {
 	vector<Variable*> v;
 	vector<Operation*> o;
-	Schedule *list_R;
+	vector<Schedule*> schedules;
+	vector<int*> levels;
 	string s = argv[2];
 	if (argc == 4) {
-		int read = readfile(argv[1], v, o);
+		int read = readfile(argv[1], v, o, levels);
 		read = checkVar(v, o);
 		int latency = stoi(s); //converts the latency to int
 
 		if (read == 0) { // No errors
-			list_R = new Schedule(o, latency);
-			int check = list_R->listR(latency);
-			sort(o.begin(), o.end(), Operation::timeCompare());
-			for (int i = 0; i < o.size(); i++) {
-				cout << o[i]->getType() << "   Time: " << o[i]->getTime() << endl;
-			}
-			if (check == -1) {
-				cout << "Invalid Latency constraint. Try a bigger latency" << endl;
-				return -1;
-			}
 
+			//initialize each schedule
+			for (int i = 0; i < levels.size(); i++) {
+				schedules[i] = new Schedule(latency);
+
+				//add each operation of that scheduling level to that scheduling level
+				for (int j = 0; j < o.size(); j++) {
+					if (o[j]->getLevel() == *levels[i]) {
+						schedules[i]->getVertices().push_back(o[j]);
+					}
+				}
+			}
+			
+			//do this for each individual schedule
+			for (int i = 0; i < schedules.size(); i++) {
+				int check = schedules[i]->listR(latency);
+				sort(schedules[i]->getVertices().begin(), schedules[i]->getVertices().end(), Operation::timeCompare());
+				for (int j = 0; j < schedules[i]->getVertices().size(); j++) {
+					cout << schedules[i]->getVertices()[j]->getType() << "   Time: " << schedules[i]->getVertices()[j]->getTime() << endl;
+				}
+				if (check == -1) {
+					cout << "Invalid Latency constraint. Try a bigger latency" << endl;
+					return -1;
+				}
+			}
 		}
 		else if (read == -1) {
 			cout << "Could not open file" << endl;
