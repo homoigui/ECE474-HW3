@@ -17,5 +17,8 @@ public:
 	Variable(string v, string t, string d); //d is dataType
 	string getVar();
 	string getType();
+
+	int getSize();
+	bool getSign();
 };
 

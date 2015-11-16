@@ -77,3 +77,11 @@ void Variable::parseDataType(string s) {
 string Variable::getType() {
 	return type;
 }
+
+int Variable::getSize() {
+	return size;
+}
+
+bool Variable::getSign() {
+	return sign;
+}

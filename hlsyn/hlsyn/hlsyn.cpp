@@ -5,6 +5,7 @@
 #include "Variable.h"
 #include "Operation.h"
 #include "Schedule.h"
+#include "HLSM.h"
 
 
 using namespace std;
@@ -38,6 +39,11 @@ int main(int argc, char* argv[])
 					return -1;
 				}
 			}
+
+			//write to file
+			HLSM fsm(schedules, v);
+			int write = fsm.createHSM(argv[3]);
+
 		}
 		else if (read == -1) {
 			cout << "Could not open file" << endl;
