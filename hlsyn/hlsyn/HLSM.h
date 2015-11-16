@@ -26,5 +26,6 @@ public:
 	void createHeader(ofstream &outputFile);
 	int createStateReg(ofstream &outputFile);
 	bool areSize(int i, string s);
+	int getPrevCycles(int schedule);
 };
 

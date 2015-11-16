@@ -299,8 +299,7 @@ int HLSM::createStateReg(ofstream &w_file) {
 	w_file << "STATE_FINAL = " << bitWidth << "\'d" << names.size() - 1 << ";" << endl;
 
 	//write state regs
-	w_file << endl << "\treg [" << bitWidth << ":0] State" << endl;
-	w_file << "\treg [" << bitWidth << ":0] nextState" << endl << endl;
+	w_file << endl << "\treg [" << bitWidth << ":0] State;" << endl;
 
 	return numStates;
 }
@@ -313,15 +312,63 @@ int HLSM::createHSM(char* file) {
 		int numStates = createStateReg(w_file);
 
 		//create state logic
-		w_file << "\talways@ (State, nextState) begin" << endl;
+		w_file << endl << "\talways@ (posedge Clk) begin" << endl;
+		w_file << "\t\tif (Rst == 1'b1) begin" << endl << "\t\t\tState <= STATE_WAIT;" << endl << "\t\t\tDone <= 0;" << endl;
+		//assign all outputs zero
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0) {
+				w_file << "\t\t\t" << allVars[i]->getVar() << " <= 0;" << endl;
+			}
+		}
+		w_file << "\t\tend" << endl << "\t\telse begin" << endl;
 		w_file << "\t\tcase (State)" << endl;
 		
 		//write wait state
-		w_file << "\t\t\tSTATE_WAIT: begin" << endl << "\t\t\t\tif (Start = 1'b1) begin" << endl << "\t\t\t\t\tnextState = STATE_1" << endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
-				"\t\t\t\t\tnextState = STATE_WAIT" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
+		w_file << "\t\t\tSTATE_WAIT: begin" << endl << "\t\t\t\tif (Start = 1'b1) begin" << endl << "\t\t\t\t\tState = STATE_1;" << endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
+			"\t\t\t\t\tState = STATE_WAIT;" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
 
 		//write operations states
-	
+		int vertex = 0;
+		int schedule = 0;
+		int latestVertex;
+		int latestSchedule;
+		int actualState;
+		for (int i = 1; i < numStates - 1; i++) {
+			w_file << "\t\t\tSTATE_" << i << ": begin" << endl;
+			latestVertex = -1;
+			latestSchedule = -1;
+			for (schedule = 0; schedule < schedules.size(); schedule++) { //iterate through each schedule 
+				for (vertex = 0; vertex < schedules[schedule]->getVertices().size(); vertex++) { //iterate through each vertex in the schedule to search for a vertex that starts at [i]
+					//if the vertex start time (normalized with the number of states) is the same as the state counter, print the operations into that state
+					actualState = getPrevCycles(schedule);
+					if (schedules[schedule]->getVertices()[vertex]->getBeginTime() + actualState == i && schedules[schedule]->getVertices()[vertex]->getType().compare("?") == 0) {//mux
+						w_file << "\t\t\t\t" << schedules[schedule]->getVertices()[vertex]->getOutput().getVar() << " <= " << "sel " << schedules[schedule]->getVertices()[vertex]->getType() <<
+							" " + schedules[schedule]->getVertices()[vertex]->getInput1().getVar() << " : " + schedules[schedule]->getVertices()[vertex]->getInput2().getVar() + ";" << endl;
+						latestVertex = vertex;
+						latestSchedule = schedule;
+					}
+					else if (schedules[schedule]->getVertices()[vertex]->getBeginTime() + actualState == i && schedules[schedule]->getVertices()[vertex]->getType().compare("?") != 0) {//any other op
+						w_file << "\t\t\t\t" << schedules[schedule]->getVertices()[vertex]->getOutput().getVar() << " <= " << schedules[schedule]->getVertices()[vertex]->getInput1().getVar() <<
+							" " + schedules[schedule]->getVertices()[vertex]->getType() << " " + schedules[schedule]->getVertices()[vertex]->getInput2().getVar() + ";" << endl;
+						latestVertex = vertex;
+						latestSchedule = schedule;
+					}
+				}
+			}
+			//determine next state
+		}
+
+		//write final state
+		w_file << "\t\t\tSTATE_FINAL: begin" << endl << "\t\t\t\tDone <= 1'b1;" << endl << "\t\t\t\tState <= STATE_WAIT;" << endl << "\t\t\tend" << endl;
+
+		//write default
+		w_file << "\t\t\tdefault: State <= STATE_WAIT;" << endl;
+
+		//finish off module
+		w_file << "\t\tendcase" << endl; //endcase
+		w_file << "\t\tend" << endl; //end else
+		w_file << "\tend" << endl; //end always
+		w_file << "endmodule";
 
 		w_file.close();
 		return 0;
@@ -339,5 +386,18 @@ bool HLSM::areSize(int s, string t) {
 		}
 	}
 	return false;
+}
+
+int HLSM::getPrevCycles(int schedule) {
+	int cycles = 0;
+	if (schedule == 0) {
+		return 0;
+	}
+	else{
+		for (int k = 0; k < schedule; k++) {
+			cycles = cycles + schedules[k]->getVertices().back()->getEndTime() - 1;
+		}
+		return cycles;
+	}
 }
 

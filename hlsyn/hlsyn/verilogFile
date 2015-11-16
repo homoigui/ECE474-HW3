@@ -19,16 +19,48 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 	           STATE_10 = 3'd10,
 	           STATE_FINAL = 3'd11;
 
-	reg [3:0] State
-	reg [3:0] nextState
+	reg [3:0] State;
 
-	always@ (State, nextState) begin
+	always@ (posedge Clk) begin
+		if (Rst == 1'b1) begin
+			State <= STATE_WAIT;
+			Done <= 0;
+			z <= 0;
+			x <= 0;
+		end
+		else begin
 		case (State)
 			STATE_WAIT: begin
 				if (Start = 1'b1) begin
-					nextState = STATE_1
+					State = STATE_1;
 				end
 				else begin
-					nextState = STATE_WAIT
+					State = STATE_WAIT;
 				end
 			end
+			STATE_1: begin
+				d <= a + b;
+			STATE_2: begin
+				g <= a < b;
+			STATE_3: begin
+				zrin <= a + c;
+			STATE_4: begin
+				zrin <= a + b;
+				f <= a * c;
+			STATE_5: begin
+			STATE_6: begin
+				x <= f - d;
+			STATE_7: begin
+				z <= zrin + f;
+			STATE_8: begin
+			STATE_9: begin
+			STATE_10: begin
+			STATE_FINAL: begin
+				Done <= 1'b1;
+				State <= STATE_WAIT;
+			end
+			default: State <= STATE_WAIT;
+		endcase
+		end
+	end
+endmodule
