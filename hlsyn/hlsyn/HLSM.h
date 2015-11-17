@@ -25,7 +25,7 @@ public:
 	int createHSM(char* file);
 	void createHeader(ofstream &outputFile);
 	int createStateReg(ofstream &outputFile);
-	bool areSize(int i, string s);
+	bool areSize(int i, string s, bool sign);
 	int getPrevCycles(int schedule);
 };
 

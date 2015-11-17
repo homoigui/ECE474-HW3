@@ -1,11 +1,12 @@
 `timescale 1ns / 1ps
 
 module HLSM (Clk, Rst, Start, Done, a, b, c, one, z, x);
-	input [31:0] a, b, c, one;
+	input signed [31:0] a, b, c, one;
 	input Clk, Rst, Start;
-	output reg [31:0] z, x;
-	reg [31:0] d, e, f, g, h;
-	reg dLTe, dEQe, dLTEe;
+	output reg signed [31:0] z, x;
+	reg signed [31:0] d, e, f, g, h;
+	reg signed dLTe, dEQe, dLTEe;
+	input Clk, Rst, Start;
 	output reg Done;
 
 	localparam STATE_WAIT = 3'd0,

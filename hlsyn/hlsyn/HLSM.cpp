@@ -62,10 +62,11 @@ void HLSM::createHeader(ofstream &w_file) {
 
 	//reset first
 	first = true;
-
+	
+	//add signed variables
 	//add 64 bit inputs
-	if (areSize(64, "input")) {
-		w_file << "\tinput [63:0] ";
+	if (areSize(64, "input", true)) {
+		w_file << "\tinput signed [63:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 64) {
 				if (first) {
@@ -81,8 +82,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 32 bit inputs
-	if (areSize(32, "input")) {
-		w_file << "\tinput [31:0] ";
+	if (areSize(32, "input", true)) {
+		w_file << "\tinput signed [31:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 32) {
 				if (first) {
@@ -98,8 +99,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 16 bit inputs
-	if (areSize(16, "input")) {
-		w_file << "\tinput [15:0] ";
+	if (areSize(16, "input", true)) {
+		w_file << "\tinput signed [15:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 16) {
 				if (first) {
@@ -115,8 +116,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 8 bit inputs
-	if (areSize(8, "input")) {
-		w_file << "\tinput [7:0] ";
+	if (areSize(8, "input", true)) {
+		w_file << "\tinput signed [7:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 8) {
 				if (first) {
@@ -132,8 +133,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 2 bit inputs
-	if (areSize(2, "input")) {
-		w_file << "\tinput [1:0] ";
+	if (areSize(2, "input", true)) {
+		w_file << "\tinput signed [1:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 2) {
 				if (first) {
@@ -149,8 +150,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 1 bit inputs
-	if (areSize(1, "input")) {
-		w_file << "\tinput ";
+	if (areSize(1, "input", true)) {
+		w_file << "\tinput signed ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 1) {
 				if (first) {
@@ -168,8 +169,8 @@ void HLSM::createHeader(ofstream &w_file) {
 
 	first = true;
 	//add 64 bit output
-	if (areSize(64, "output")) {
-		w_file << "\toutput reg [63:0] ";
+	if (areSize(64, "output", true)) {
+		w_file << "\toutput reg signed [63:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 64) {
 				if (first) {
@@ -185,8 +186,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 32 bit output
-	if (areSize(32, "output")) {
-		w_file << "\toutput reg [31:0] ";
+	if (areSize(32, "output", true)) {
+		w_file << "\toutput reg signed [31:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 32) {
 				if (first) {
@@ -202,8 +203,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 16 bit output
-	if (areSize(16, "output")) {
-		w_file << "\toutput reg [15:0] ";
+	if (areSize(16, "output", true)) {
+		w_file << "\toutput reg signed [15:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 16) {
 				if (first) {
@@ -219,8 +220,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 8 bit output
-	if (areSize(8, "output")) {
-		w_file << "\toutput reg [7:0] ";
+	if (areSize(8, "output", true)) {
+		w_file << "\toutput reg signed [7:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 8) {
 				if (first) {
@@ -236,8 +237,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 2 bit output
-	if (areSize(2, "output")) {
-		w_file << "\toutput reg [1:0] ";
+	if (areSize(2, "output", true)) {
+		w_file << "\toutput reg signed [1:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 2) {
 				if (first) {
@@ -253,8 +254,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 1 bit output
-	if (areSize(1, "output")) {
-		w_file << "\toutput reg ";
+	if (areSize(1, "output", true)) {
+		w_file << "\toutput reg signed ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 1) {
 				if (first) {
@@ -271,8 +272,8 @@ void HLSM::createHeader(ofstream &w_file) {
 
 	first = true;
 	//add 64 bit reg
-	if (areSize(64, "variable")) {
-		w_file << "\treg [63:0] ";
+	if (areSize(64, "variable", true)) {
+		w_file << "\treg signed [63:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 64) {
 				if (first) {
@@ -288,8 +289,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 32 bit reg
-	if (areSize(32, "variable")) {
-		w_file << "\treg [31:0] ";
+	if (areSize(32, "variable", true)) {
+		w_file << "\treg signed [31:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 32) {
 				if (first) {
@@ -305,8 +306,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 16 bit reg
-	if (areSize(16, "variable")) {
-		w_file << "\treg [15:0] ";
+	if (areSize(16, "variable", true)) {
+		w_file << "\treg signed [15:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 16) {
 				if (first) {
@@ -322,8 +323,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 8 bit reg
-	if (areSize(8, "variable")) {
-		w_file << "\treg [7:0] ";
+	if (areSize(8, "variable", true)) {
+		w_file << "\treg signed [7:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 8) {
 				if (first) {
@@ -339,8 +340,8 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 2 bit reg
-	if (areSize(2, "variable")) {
-		w_file << "\treg [1:0] ";
+	if (areSize(2, "variable", true)) {
+		w_file << "\treg signed [1:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 2) {
 				if (first) {
@@ -356,8 +357,318 @@ void HLSM::createHeader(ofstream &w_file) {
 	}
 	first = true;
 	//add 1 bit reg
-	if (areSize(1, "variable")) {
-		w_file << "\treg ";
+	if (areSize(1, "variable", true)) {
+		w_file << "\treg signed ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 1) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+
+	//unsigned
+	//add 64 bit inputs
+	if (areSize(64, "input", false)) {
+		w_file << "\tinput unsigned [63:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 64) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 32 bit inputs
+	if (areSize(32, "input", false)) {
+		w_file << "\tinput unsigned [31:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 32) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 16 bit inputs
+	if (areSize(16, "input", false)) {
+		w_file << "\tinput unsigned [15:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 16) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 8 bit inputs
+	if (areSize(8, "input", false)) {
+		w_file << "\tinput unsigned [7:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 8) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 2 bit inputs
+	if (areSize(2, "input", false)) {
+		w_file << "\tinput unsigned [1:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 2) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 1 bit inputs
+	if (areSize(1, "input", false)) {
+		w_file << "\tinput unsigned ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("input") == 0 && allVars[i]->getSize() == 1) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+	}
+
+	w_file << "\tinput Clk, Rst, Start;" << endl;
+
+	first = true;
+	//add 64 bit output
+	if (areSize(64, "output", false)) {
+		w_file << "\toutput reg unsigned [63:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 64) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 32 bit output
+	if (areSize(32, "output", false)) {
+		w_file << "\toutput reg unsigned [31:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 32) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 16 bit output
+	if (areSize(16, "output", false)) {
+		w_file << "\toutput reg unsigned [15:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 16) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 8 bit output
+	if (areSize(8, "output", false)) {
+		w_file << "\toutput reg unsigned [7:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 8) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 2 bit output
+	if (areSize(2, "output", false)) {
+		w_file << "\toutput reg unsigned [1:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 2) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 1 bit output
+	if (areSize(1, "output", false)) {
+		w_file << "\toutput reg unsigned ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 1) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+
+	first = true;
+	//add 64 bit reg
+	if (areSize(64, "variable", false)) {
+		w_file << "\treg unsigned [63:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 64) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 32 bit reg
+	if (areSize(32, "variable", false)) {
+		w_file << "\treg unsigned [31:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 32) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 16 bit reg
+	if (areSize(16, "variable", false)) {
+		w_file << "\treg unsigned [15:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 16) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 8 bit reg
+	if (areSize(8, "variable", false)) {
+		w_file << "\treg unsigned [7:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 8) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 2 bit reg
+	if (areSize(2, "variable", false)) {
+		w_file << "\treg unsigned [1:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 2) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 1 bit reg
+	if (areSize(1, "variable", false)) {
+		w_file << "\treg unsigned ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 1) {
 				if (first) {
@@ -538,9 +849,9 @@ int HLSM::createHSM(char* file) {
 	}
 }
 
-bool HLSM::areSize(int s, string t) {
+bool HLSM::areSize(int s, string t, bool sign) {
 	for (int i = 0; i < allVars.size(); i++) {
-		if (allVars[i]->getSize() == s && allVars[i]->getType() == t) {
+		if (allVars[i]->getSize() == s && allVars[i]->getType() == t && allVars[i]->getSign() == sign) {
 			return true;
 		}
 	}
