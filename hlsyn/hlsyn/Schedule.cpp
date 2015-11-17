@@ -316,33 +316,95 @@ void Schedule::UnscheduleSequencingGraph() {
 		nop->AddChild(v[0]);
 		return;
 	}
-	for (unsigned int i = 0; i < v.size(); i++) {
-		if (!v[i]->getType().compare("?")) { //Its a mux!
-			if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0 && static_cast<Mux*>(v[i])->GetSel().getType().compare("input") == 0) {
-				nop->AddChild(v[i]);
-				v.erase(v.begin() + i);
-				i--;
+
+	//for (unsigned int i = 0; i < v.size(); i++) {
+	//	if (!v[i]->getType().compare("?")) { //Its a mux!
+	//		if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0 && static_cast<Mux*>(v[i])->GetSel().getType().compare("input") == 0) {
+	//			nop->AddChild(v[i]);
+	//			v.erase(v.begin() + i);
+	//			i--;
+	//			hasnop = true;
+	//		}
+	//	}
+	//	else { //Everything else
+	//		if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0) {
+	//			nop->AddChild(v[i]);
+	//			v[i]->AddParent(nop);
+	//			v.erase(v.begin() + i);
+	//			i--;
+	//			hasnop = true;
+	//		}
+	//	}
+	//}
+	for (int i = 0; i < v.size(); i++) {
+		v[i]->connected = false;
+	}
+	//nop->AddChild(v[0]);
+	//v.erase(v.begin());
+	for (int i = 0; i < v.size(); i++) {
+		for (int j = 0; j < v.size(); j++) {
+			string output = v[i]->getOutput().getVar();
+			string input1 = v[j]->getInput1().getVar();
+			string input2 = v[j]->getInput2().getVar();
+			if (!v[j]->getType().compare("?")) {
+				if (output.compare(static_cast<Mux*>(v[j])->GetSel().getVar()) == 0 || output.compare(input1) == 0 || output.compare(input2) == 0) {
+					v[j]->connected = true;
+				}
 			}
-		}
-		else{ //Everything else
-			if (v[i]->getInput1().getType().compare("input") == 0 && v[i]->getInput2().getType().compare("input") == 0) {
-				nop->AddChild(v[i]);
-				v[i]->AddParent(nop);
-				v.erase(v.begin() + i);
-				i--;
+			else {
+				if (output.compare(input1) == 0 || output.compare(input2) == 0) {
+					v[j]->connected = true;
+				}
 			}
 		}
 	}
+	for (int i = 0; i < v.size(); i++) {
+		if (v[i]->connected == false) {
+			nop->AddChild(v[i]);
+			v.erase(v.begin() + i);
+			i--;
+		}
+	}
+
+	
+		
+
+	
+	//Operation* head = NULL;
+	//Operation* end= NULL;
+	//if (!hasnop) { //Middle parts or stuff with no two inputs
+	//	for (unsigned int i = 0; i < v.size(); i++) {
+	//		for (unsigned int j = 0; j < v.size(); j++) {
+	//			if (v[i]->getOutput().getVar().compare(v[j]->getInput1().getVar()) == 0) {
+	//				v[i]->AddChild(v[j]);
+	//				v[j]->AddParent(v[i]);
+	//				if (head == NULL) {
+	//					head = v[i];
+	//				}
+	//				nop->AddChild(head);
+	//			}
+	//		}
+	//	}
+
+	//}
 
 	for (unsigned int i = 0; i < nop->getChild().size(); i++) {
 		USGSupport(nop->getChild()[i], v);
 	}
-	for (unsigned int i = 0; i < vertex.size(); i++) {
-		if (!vertex[i]->getOutput().getType().compare("output")) {
+
+	for (int i = 0; i < vertex.size(); i++) {
+		if (vertex[i]->getChild().size() == 0) {
 			vertex[i]->AddChild(sink);
 			sink->AddParent(vertex[i]);
 		}
 	}
+
+	/*for (unsigned int i = 0; i < vertex.size(); i++) {
+		if (!vertex[i]->getOutput().getType().compare("output")) {
+			vertex[i]->AddChild(sink);
+			sink->AddParent(vertex[i]);
+		}
+	}*/
 	//new code
 	for (unsigned int i = 0; i < vertex.size(); i++) {
 		if (vertex[i]->getChild().size() == 0) {

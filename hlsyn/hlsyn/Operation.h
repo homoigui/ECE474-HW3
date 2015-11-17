@@ -10,6 +10,8 @@ using namespace std;
 
 class Operation {
 protected:
+	vector<Operation*> child;
+	vector<Operation*> parent;
 	string type;
 	char resourceType;
 	Variable output;
@@ -24,8 +26,7 @@ protected:
 	int numIF;
 	int numElse;
 	string conditionIF;
-	vector<Operation*> child;
-	vector<Operation*> parent;
+	
 public:
 	struct slackCompare {
 		bool operator()(const Operation *left, const Operation *right) {
@@ -78,6 +79,7 @@ public:
 	int uniqueNo;
 	vector<Operation*> *left;
 	vector<Operation*> *right;
+	bool connected;
 };
 
 class Mux : public Operation {
