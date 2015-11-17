@@ -1,14 +1,13 @@
-input Int32 a, b, c
-output Int32 z, x
+input UInt16 a, b, c
 
-variable Int32 d, f, g, zrin
+output UInt8 z
+output UInt16 x
+
+variable UInt8 d, e, f, g
 
 d = a + b
-g = a < b
-zrin = a + c
-if ( g ) {
-	zrin = a + b
-}
+e = a + c
+g = d > e
+z = g ? d : e
 f = a * c
 x = f - d  
-z = zrin + f

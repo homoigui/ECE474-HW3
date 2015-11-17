@@ -1,25 +1,21 @@
 `timescale 1ns / 1ps
 
 module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
-	input [31:0] a, b, c;
+	input [15:0] a, b, c;
 	input Clk, Rst, Start;
-	output [31:0] z, x;
+	output [15:0] x;
+	output [7:0] z;
 	output reg Done;
 
-	localparam STATE_WAIT = 3'd0,
-	           STATE_1 = 3'd1,
-	           STATE_2 = 3'd2,
-	           STATE_3 = 3'd3,
-	           STATE_4 = 3'd4,
-	           STATE_5 = 3'd5,
-	           STATE_6 = 3'd6,
-	           STATE_7 = 3'd7,
-	           STATE_8 = 3'd8,
-	           STATE_9 = 3'd9,
-	           STATE_10 = 3'd10,
-	           STATE_FINAL = 3'd11;
+	localparam STATE_WAIT = 2'd0,
+	           STATE_1 = 2'd1,
+	           STATE_2 = 2'd2,
+	           STATE_3 = 2'd3,
+	           STATE_4 = 2'd4,
+	           STATE_5 = 2'd5,
+	           STATE_FINAL = 2'd6;
 
-	reg [3:0] State;
+	reg [2:0] State;
 
 	always@ (posedge Clk) begin
 		if (Rst == 1'b1) begin
@@ -31,6 +27,7 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 		else begin
 		case (State)
 			STATE_WAIT: begin
+				Done <= 0;
 				if (Start = 1'b1) begin
 					State = STATE_1;
 				end
@@ -40,21 +37,30 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 			end
 			STATE_1: begin
 				d <= a + b;
-			STATE_2: begin
-				g <= a < b;
-			STATE_3: begin
-				zrin <= a + c;
-			STATE_4: begin
-				zrin <= a + b;
 				f <= a * c;
+
+				State <= STATE_2;
+			end
+			STATE_2: begin
+				e <= a + c;
+
+				State <= STATE_3;
+			end
+			STATE_3: begin
+				g <= d > e;
+
+				State <= STATE_4;
+			end
+			STATE_4: begin
+				z <= sel ? d : e;
+
+				State <= STATE_5;
+			end
 			STATE_5: begin
-			STATE_6: begin
 				x <= f - d;
-			STATE_7: begin
-				z <= zrin + f;
-			STATE_8: begin
-			STATE_9: begin
-			STATE_10: begin
+
+				State <= STATE_FINAL;
+			end
 			STATE_FINAL: begin
 				Done <= 1'b1;
 				State <= STATE_WAIT;
