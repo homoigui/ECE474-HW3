@@ -26,7 +26,7 @@ Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable 
 
 Operation::~Operation() {};
 
-Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r) {
+Operation::Operation(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r) {
 	type = t;
 	delay = d;
 	input1 = i1;
@@ -39,11 +39,9 @@ Mux::Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable 
 	resourceType = r;
 }
 
-Mux::Mux() {
-	
-}
 
-Variable Mux::GetSel() {
+
+Variable Operation::GetSel() {
 	return sel;
 }
 void Operation::setType(string t) {

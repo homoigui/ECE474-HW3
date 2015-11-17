@@ -26,6 +26,7 @@ protected:
 	int numIF;
 	int numElse;
 	string conditionIF;
+	Variable sel;
 	
 public:
 	struct slackCompare {
@@ -80,15 +81,10 @@ public:
 	vector<Operation*> *left;
 	vector<Operation*> *right;
 	bool connected;
-};
-
-class Mux : public Operation {
-private:
-	Variable sel;
-public:
-	Mux();
-	Mux(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r);
+	Operation(string t, int d, int v, Variable i1, Variable i2, Variable o, Variable s, char r);
 	Variable GetSel();
 };
+
+
 
 #endif

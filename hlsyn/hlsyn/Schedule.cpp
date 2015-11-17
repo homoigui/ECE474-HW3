@@ -347,7 +347,7 @@ void Schedule::UnscheduleSequencingGraph() {
 			string input1 = v[j]->getInput1().getVar();
 			string input2 = v[j]->getInput2().getVar();
 			if (!v[j]->getType().compare("?")) {
-				if (output.compare(static_cast<Mux*>(v[j])->GetSel().getVar()) == 0 || output.compare(input1) == 0 || output.compare(input2) == 0) {
+				if (output.compare(v[j]->GetSel().getVar()) == 0 || output.compare(input1) == 0 || output.compare(input2) == 0) {
 					v[j]->connected = true;
 				}
 			}
@@ -422,7 +422,7 @@ void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
 		for (unsigned int i = 0; i < v.size(); i++) {
 			string var = o->getOutput().getVar();
 			if (!v[i]->getType().compare("?")) {
-				if (!var.compare(v[i]->getInput1().getVar()) || !var.compare(v[i]->getInput2().getVar()) || !var.compare(static_cast<Mux*>(v[i])->GetSel().getVar())) {
+				if (!var.compare(v[i]->getInput1().getVar()) || !var.compare(v[i]->getInput2().getVar()) || !var.compare(v[i]->GetSel().getVar())) {
 					bool exist = false;
 					for (unsigned int j = 0; j < o->getChild().size(); j++) {
 						if (!o->getChild()[j]->getOutput().getVar().compare(v[i]->getOutput().getVar())) {
@@ -469,7 +469,7 @@ void Schedule::renewOperations(vector<vector<Operation*> > &o_list) {
 		vector<Operation*> op_new;
 		for (unsigned int j = 0; j < o_list[i].size(); j++) {
 			if (o_list[i][j]->getType().compare("?") == 0) { //if mux
-				Operation* op = new Mux();
+				Operation* op = new Operation();
 				*op = *o_list[i][j];
 				op_new.push_back(op);
 			}

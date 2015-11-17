@@ -53,12 +53,12 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 				State <= STATE_4;
 			end
 			STATE_4: begin
-				z <= error ? d : e;
+				x <= f - d;
 
 				State <= STATE_5;
 			end
 			STATE_5: begin
-				x <= f - d;
+				z <= g ? d : e;
 
 				State <= STATE_FINAL;
 			end

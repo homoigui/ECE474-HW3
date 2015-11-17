@@ -179,7 +179,7 @@ int readfile(char* file, vector<Variable*> &v, vector<Operation*> &o) {
 								output = *v[i];
 							}
 						}
-						Operation *mtemp = new Mux(tokens[3], 1, vertex, input1, input2, output, sel, 'a'); //Put in a vector for now, can pre schedule here
+						Operation *mtemp = new Operation(tokens[3], 1, vertex, input1, input2, output, sel, 'a'); //Put in a vector for now, can pre schedule here
 						vertex++;
 						mtemp->setNumIF(numIF);
 						mtemp->setNumElse(numElse);
@@ -214,7 +214,7 @@ int checkVar(vector<Variable*> v, vector<Operation*> o) {
 	vector<string> s;
 	for (unsigned int i = 0; i < o.size(); i++) {
 		if (!o[i]->getType().compare("?")) {
-			s.push_back(static_cast<Mux*>(o[i])->GetSel().getVar());
+			s.push_back(o[i]->GetSel().getVar());
 		}
 		s.push_back(o[i]->getInput1().getVar());
 		s.push_back(o[i]->getInput2().getVar());

@@ -449,7 +449,7 @@ int HLSM::createHSM(char* file) {
 				for (vertex = 0; vertex < schedules[schedule]->getVertices().size(); vertex++) {
 					//find all vertexes with start time = current state and add to operation stringbuffer
 					if (schedules[schedule]->getVertices()[vertex]->getTime() == cycle && schedules[schedule]->getVertices()[vertex]->getType().compare("?") == 0) {//if vertex start time = state and vertex is mux
-						opLine << "\t\t\t\t" << schedules[schedule]->getVertices()[vertex]->getOutput().getVar() << " <= " << static_cast<Mux*>(schedules[schedule]->getVertices()[vertex])->GetSel().getVar() << " " + schedules[schedule]->getVertices()[vertex]->getType() <<
+						opLine << "\t\t\t\t" << schedules[schedule]->getVertices()[vertex]->getOutput().getVar() << " <= " << schedules[schedule]->getVertices()[vertex]->GetSel().getVar() << " " + schedules[schedule]->getVertices()[vertex]->getType() <<
 							" " + schedules[schedule]->getVertices()[vertex]->getInput1().getVar() << " : " + schedules[schedule]->getVertices()[vertex]->getInput2().getVar() + ";" << endl;
 					}
 					else if (schedules[schedule]->getVertices()[vertex]->getTime() == cycle && schedules[schedule]->getVertices()[vertex]->getType().compare("?") != 0) { //any other op
