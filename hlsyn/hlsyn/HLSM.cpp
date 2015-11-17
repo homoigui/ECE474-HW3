@@ -169,7 +169,7 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 64 bit output
 	if (areSize(64, "output")) {
-		w_file << "\toutput [63:0] ";
+		w_file << "\toutput reg [63:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 64) {
 				if (first) {
@@ -186,7 +186,7 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 32 bit output
 	if (areSize(32, "output")) {
-		w_file << "\toutput [31:0] ";
+		w_file << "\toutput reg [31:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 32) {
 				if (first) {
@@ -203,7 +203,7 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 16 bit output
 	if (areSize(16, "output")) {
-		w_file << "\toutput [15:0] ";
+		w_file << "\toutput reg [15:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 16) {
 				if (first) {
@@ -220,7 +220,7 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 8 bit output
 	if (areSize(8, "output")) {
-		w_file << "\toutput [7:0] ";
+		w_file << "\toutput reg [7:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 8) {
 				if (first) {
@@ -237,7 +237,7 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 2 bit output
 	if (areSize(2, "output")) {
-		w_file << "\toutput [1:0] ";
+		w_file << "\toutput reg [1:0] ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 2) {
 				if (first) {
@@ -254,9 +254,112 @@ void HLSM::createHeader(ofstream &w_file) {
 	first = true;
 	//add 1 bit output
 	if (areSize(1, "output")) {
-		w_file << "\toutput ";
+		w_file << "\toutput reg ";
 		for (int i = 0; i < allVars.size(); i++) {
 			if (allVars[i]->getType().compare("output") == 0 && allVars[i]->getSize() == 1) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+
+	first = true;
+	//add 64 bit reg
+	if (areSize(64, "variable")) {
+		w_file << "\treg [63:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 64) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 32 bit reg
+	if (areSize(32, "variable")) {
+		w_file << "\treg [31:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 32) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 16 bit reg
+	if (areSize(16, "variable")) {
+		w_file << "\treg [15:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 16) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 8 bit reg
+	if (areSize(8, "variable")) {
+		w_file << "\treg [7:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 8) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 2 bit reg
+	if (areSize(2, "variable")) {
+		w_file << "\treg [1:0] ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 2) {
+				if (first) {
+					w_file << allVars[i]->getVar();
+					first = false;
+				}
+				else if (!first) {
+					w_file << ", " << allVars[i]->getVar();
+				}
+			}
+		}
+		w_file << ";" << endl;
+	}
+	first = true;
+	//add 1 bit reg
+	if (areSize(1, "variable")) {
+		w_file << "\treg ";
+		for (int i = 0; i < allVars.size(); i++) {
+			if (allVars[i]->getType().compare("variable") == 0 && allVars[i]->getSize() == 1) {
 				if (first) {
 					w_file << allVars[i]->getVar();
 					first = false;
