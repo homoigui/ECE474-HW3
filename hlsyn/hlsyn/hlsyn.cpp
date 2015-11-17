@@ -41,7 +41,6 @@ int main(int argc, char* argv[])
 			}
 
 			//write to file
-			cout << schedules[0]->getVertices()[3]->GetSel().getVar() << endl;
 			HLSM fsm(schedules, v);
 			int write = fsm.createHSM(argv[3]);
 

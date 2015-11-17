@@ -438,8 +438,8 @@ int HLSM::createHSM(char* file) {
 		stateLogic << "\t\tcase (State)" << endl;
 		
 		//write wait state
-		stateLogic << "\t\t\tSTATE_WAIT: begin" << endl << "\t\t\t\tDone <= 0;" << endl << "\t\t\t\tif (Start = 1'b1) begin" << endl << "\t\t\t\t\tState = STATE_1;" << endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
-			"\t\t\t\t\tState = STATE_WAIT;" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
+		stateLogic << "\t\t\tSTATE_WAIT: begin" << endl << "\t\t\t\tDone <= 0;" << endl << "\t\t\t\tif (Start == 1'b1) begin" << endl << "\t\t\t\t\tState <= STATE_1;" << endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
+			"\t\t\t\t\tState <= STATE_WAIT;" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
 
 		//write operations states
 		for (int i = 1; i <= states; i++) { //for each state check to see if a vertex starts or ends in it
@@ -475,10 +475,23 @@ int HLSM::createHSM(char* file) {
 			if ((latestVertex == schedules[latestSchedule]->getVertices().size()-1) && latestSchedule < schedules.size() - 1 && opFound) {
 				if (schedules[latestSchedule + 1]->getVertices()[0]->getConditionIF().compare("no condition") != 0) {//check to see if entering if
 																											   //code has reached an if statement, now check how many cycles the if lasts for
-					int ifcycles = schedules[latestSchedule + 1]->getVertices().back()->getTime() + schedules[latestSchedule + 1]->getVertices().back()->getDelay() - 1;
-					stateLogic << endl << "\t\t\t\tif (" << schedules[latestSchedule + 1]->getVertices()[0]->getConditionIF() << ") begin" << endl << "\t\t\t\t\tState = STATE_" <<
-						i + 1 << ";" << endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
-						"\t\t\t\t\tState = STATE_" << i + 1 + ifcycles << ";" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
+					stringstream waka;
+					int ifcycles = 0;
+					string indent = "";
+
+					int f = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF();
+					ifcycles = schedules[latestSchedule + f]->getVertices().back()->getTime() + schedules[latestSchedule + f]->getVertices().back()->getDelay() - 1;
+					waka << endl << "\t\t\t\tif (" << schedules[latestSchedule + f]->getVertices()[0]->getConditionIF() << ") begin" << endl << waka.str() <<
+						endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
+						"\t\t\t\t\tState <= STATE_" << i + f + ifcycles << ";" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
+					
+					for (f = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF() - 1; f > 0; f--) { //create nested ifs if needed
+						ifcycles = schedules[latestSchedule + f]->getVertices().back()->getTime() + schedules[latestSchedule + f]->getVertices().back()->getDelay() - 1;
+						waka << endl << "\t\t\t\tif (" << schedules[latestSchedule + f]->getVertices()[0]->getConditionIF() << ") begin" << endl << waka.str() <<
+							endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl << "\t\t\t\t\tState <= STATE_" << i + f + ifcycles << ";" << endl << "\t\t\t\tend" 
+							<< endl << "\t\t\tend" << endl;
+					}
+					stateLogic << waka.str();
 					opFound = false;
 				}
 				else if (schedules[latestSchedule + 1]->getVertices()[0]->getConditionIF().compare("no condition") == 0) { //leaving a branch, just go to next vertex
