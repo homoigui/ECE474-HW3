@@ -710,7 +710,10 @@ int HLSM::createStateReg(ofstream &w_file) {
 	names.push_back("STATE_WAIT");
 
 	for (int i = 1; i < numStates + 2 - 1; i++) {
-		names.push_back("STATE_" + to_string(i));
+		stringstream s;
+		s << i;
+		string converet(s.str());
+		names.push_back("STATE_" + converet);
 	}
 
 	names.push_back("STATE_FINAL");
