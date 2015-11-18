@@ -101,35 +101,35 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 			}
 		}
 	}
-	
+	int done = 0;
+	bool isMulDone = true;
 	//until every vertex is scheduled
 	while (!allScheduled() && timestep <= latency || allOps.size() != 0) {
 		//update cand ops
 		
 		alu = 0;
 		mul = 0;
-		for (unsigned int i = 0; i < scheduledOps.size(); i++) {
+		for (unsigned int i = 0; i < scheduledOps.size(); i++) { //Checks if it reached its end time. Set it as scheduled when it does
 			if (timestep == scheduledOps[i]->getEndTime()) {
 				scheduledOps[i]->isScheduled = true;
 			}
 		}
 		if (scheduledOps.size() != 0) { //at least one of the initial is scheduled
-			for (unsigned int i = 0; i < allOps.size(); i++) {
+			for (unsigned int i = 0; i < allOps.size(); i++) { //check all the unscheduled ops
 				bool isParentScheduled = true;
-				for (unsigned int j = 0; j < allOps[i]->getParent().size(); j++) {
-					if (allOps[i]->getParent()[j]->isScheduled == false) {
+				for (unsigned int j = 0; j < allOps[i]->getParent().size(); j++) { //First make sure if all the parents are scheduled
+					if (allOps[i]->getParent()[j]->isScheduled == false) { 
 						isParentScheduled = false;
 						break;
 					}
 				}
-				if (isParentScheduled) {
+				if (isParentScheduled) { //Set it as a candiate op if all the parents are scheduled
 					candOps.push_back(allOps[i]);
 					allOps.erase(allOps.begin() + i);
 					i--;
 				}
 			}
 		}
-		
 		//schedule cand ops
 		for (unsigned int i = 0; i < resource.size(); i++) { //for each resource type
 			refreshSlacks(timestep); //compute slacks
@@ -147,6 +147,8 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 					}
 					else if(candOps[j]->getResourceType() == 'm') {
 						mul++;
+						isMulDone = false;
+						done = 0;
 						if (resource[i].type == 'm' && mul > resource[i].amount) {
 							resource[i].amount = mul;
 						}						
@@ -155,7 +157,11 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 					j--;
 				}
 			}
+			if (done == 2) {
+				isMulDone = true;
+			}
 			for (unsigned int j = 0; j < candOps.size(); j++) { //schedule ops requiring no additional resources, remove vertex and add it to teh scheduled ops vector
+				
 				if (candOps[j]->isALU() && resource[i].type == 'a' && alu < resource[i].amount) {
 					candOps[j]->setBeginTime(timestep); //schedule op
 					candOps[j]->setTime(timestep);
@@ -166,17 +172,23 @@ int Schedule::listR(int latency) {	//performs scheduling task listR
 					j--;
 				}
 				else if (candOps[j]->isMUL() && resource[i].type == 'm' && mul < resource[i].amount) {
-					candOps[j]->setBeginTime(timestep); //schedule op
-					candOps[j]->setTime(timestep);
-					candOps[j]->setEndTime(candOps[j]->getBeginTime() + candOps[j]->getDelay());
-					scheduledOps.push_back(candOps[j]);
-					candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
-					mul++;
-					j--;
+					if (isMulDone) {
+						candOps[j]->setBeginTime(timestep); //schedule op
+						candOps[j]->setTime(timestep);
+						candOps[j]->setEndTime(candOps[j]->getBeginTime() + candOps[j]->getDelay());
+						scheduledOps.push_back(candOps[j]);
+						candOps.erase(candOps.begin() + j); //remove the scheduled op from the candOps vector
+						mul++;
+						j--;
+						isMulDone = false;
+						done = 0;
+					}
+					
 				}
 			}
 		}
 		timestep++;
+		done++; //Makes sure that the multiplier is finished first
 	}
 	std::sort(vertex.begin(), vertex.end(), Operation::timeCompare());
 	return 0;
@@ -206,10 +218,10 @@ bool Schedule::ALAP(int latency) {
 	if (count > latency) {
 		return false;
 	}
-	vector<Operation*> unscheduled = vertex;
-	vector < Operation*> scheduled;
-	scheduled.push_back(sink);
-	while (unscheduled.size() != 0) {
+	vector<Operation*> unscheduled = vertex; //List of unscheduled veretex for alap
+	vector < Operation*> scheduled; //List of already scheduled vertex
+	scheduled.push_back(sink); //Set sink node first
+	while (unscheduled.size() != 0) { //keep going until unscheduled is empty
 		int vertexWithAllChildScheduled;
 		for (unsigned int i = 0; i < unscheduled.size(); i++) {
 			int size = 0;
@@ -306,7 +318,7 @@ void Schedule::TSVisit(vector<Operation*> &L, Operation* u) {
 	L.insert(L.begin(), u);
 }
 
-void Schedule::UnscheduleSequencingGraph() {
+void Schedule::UnscheduleSequencingGraph() { //This function just connects stuff together
 	//Schedule Input First
 	vector<Operation*> v = vertex; //Make copy //Unschedule list
 	if (v.size() == 1) {
@@ -414,7 +426,7 @@ void Schedule::UnscheduleSequencingGraph() {
 	}
 }
 
-void Schedule::USGSupport(Operation *o, vector<Operation*> v) {
+void Schedule::USGSupport(Operation *o, vector<Operation*> v) { //recursive function to connect the middle parts together
 	if (!o->getOutput().getType().compare("output")) {
 		return; //reached the end
 	}

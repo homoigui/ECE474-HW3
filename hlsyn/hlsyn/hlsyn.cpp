@@ -16,8 +16,9 @@ int main(int argc, char* argv[])
 	vector<Operation*> o;
 	vector<vector<Operation*> > o_list;
 	vector<Schedule*> schedules;
-	string s = argv[2];
+	
 	if (argc == 4) {
+		string s = argv[2];
 		int latency = stoi(s); //converts the latency to int
 		int read = readfile(argv[1], v, o);
 		read = checkVar(v, o);
