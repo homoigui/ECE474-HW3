@@ -688,15 +688,17 @@ int HLSM::createStateReg(ofstream &w_file) {
 	//calculate number of states (states = maxmim time for each schedle + wait + done)
 	int numStates = 0;
 	int maxDelay = 0;
+	int delay = 0;
 	for (int i = 0; i < schedules.size(); i++) {
 		for (int j = 0; j < schedules[i]->getVertices().size(); j++){
-			int delay = schedules[i]->getVertices()[j]->getTime() + schedules[i]->getVertices()[j]->getDelay() - 1;
+			delay = schedules[i]->getVertices()[j]->getTime() + schedules[i]->getVertices()[j]->getDelay() - 1;
 
 			if (delay > maxDelay) {
 				maxDelay = delay;
 			}
 		}
-		numStates = maxDelay;
+		numStates = numStates + maxDelay;
+		maxDelay = 0;
 	}
 
 	//take log base 2 of number of states, then call ceil() to round up to next int

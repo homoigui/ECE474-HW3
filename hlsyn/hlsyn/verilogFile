@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 
-module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
-	input signed [31:0] u, x, y, dx, a, three;
-	output reg signed [31:0] u1, x1, y1, c;
-	reg signed [31:0] t1, t2, t3, t4, t5, t6, t7, vx1;
+module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
+	input signed [31:0] a, b, c;
+	output reg signed [31:0] z, x;
+	reg signed [31:0] d, f, g, zrin;
 	input Clk, Rst, Start;
 	output reg Done;
 
@@ -16,9 +16,7 @@ module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
 	           STATE_6 = 3'd6,
 	           STATE_7 = 3'd7,
 	           STATE_8 = 3'd8,
-	           STATE_9 = 3'd9,
-	           STATE_10 = 3'd10,
-	           STATE_FINAL = 3'd11;
+	           STATE_FINAL = 3'd9;
 
 	reg [3:0] State;
 
@@ -26,10 +24,8 @@ module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
 		if (Rst == 1'b1) begin
 			State <= STATE_WAIT;
 			Done <= 0;
-			u1 <= 0;
-			x1 <= 0;
-			y1 <= 0;
-			c <= 0;
+			z <= 0;
+			x <= 0;
 		end
 		else begin
 		case (State)
@@ -43,28 +39,31 @@ module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
 				end
 			end
 			STATE_1: begin
-				vx1 <= x + dx;
-				t1 <= three * x;
+				d <= a + b;
 
 				State <= STATE_2;
 			end
 			STATE_2: begin
-				x1 <= x + dx;
+				g <= a < b;
 
 				State <= STATE_3;
 			end
 			STATE_3: begin
-				t2 <= u * dx;
-				c <= vx1 < a;
-
-				State <= STATE_4;
+				zrin <= a + c;
+				if (g) begin
+					State <= STATE_4;
+				end
+				else begin
+					State <= STATE_5;
+				end
 			end
 			STATE_4: begin
+				zrin <= a + b;
 
 				State <= STATE_5;
 			end
 			STATE_5: begin
-				t5 <= three * y;
+				f <= a * c;
 
 				State <= STATE_6;
 			end
@@ -73,24 +72,12 @@ module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
 				State <= STATE_7;
 			end
 			STATE_7: begin
-				t3 <= t1 * t2;
+				x <= f - d;
 
 				State <= STATE_8;
 			end
 			STATE_8: begin
-				t6 <= t5 * dx;
-				t7 <= u * dx;
-
-				State <= STATE_9;
-			end
-			STATE_9: begin
-				t4 <= u - t3;
-
-				State <= STATE_10;
-			end
-			STATE_10: begin
-				u1 <= t4 - t6;
-				y1 <= y + t7;
+				z <= zrin + f;
 
 				State <= STATE_FINAL;
 			end
