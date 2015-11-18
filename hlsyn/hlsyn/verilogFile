@@ -1,11 +1,10 @@
 `timescale 1ns / 1ps
 
-module HLSM (Clk, Rst, Start, Done, a, b, c, one, z, x);
-	input signed [31:0] a, b, c, one;
-	input Clk, Rst, Start;
-	output reg signed [31:0] z, x;
-	reg signed [31:0] d, e, f, g, h;
-	reg signed dLTe, dEQe, dLTEe;
+module HLSM (Clk, Rst, Start, Done, a, b, c, d, e, f, g, h, sa, one, two, four, avg);
+	input signed [31:0] a, b, c, d, e, f, g, h, sa, one, two, four;
+	output reg signed [31:0] avg;
+	reg signed [31:0] t1, t2, t3, t4, t5, t6, t7, t7div2, t7div4;
+	reg signed csa1, csa2, csa3;
 	input Clk, Rst, Start;
 	output reg Done;
 
@@ -22,7 +21,9 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, one, z, x);
 	           STATE_10 = 3'd10,
 	           STATE_11 = 3'd11,
 	           STATE_12 = 3'd12,
-	           STATE_FINAL = 3'd13;
+	           STATE_13 = 3'd13,
+	           STATE_14 = 3'd14,
+	           STATE_FINAL = 3'd15;
 
 	reg [3:0] State;
 
@@ -30,8 +31,7 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, one, z, x);
 		if (Rst == 1'b1) begin
 			State <= STATE_WAIT;
 			Done <= 0;
-			z <= 0;
-			x <= 0;
+			avg <= 0;
 		end
 		else begin
 		case (State)
@@ -45,88 +45,84 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, one, z, x);
 				end
 			end
 			STATE_1: begin
-				d <= a + b;
+				t1 <= a + b;
 
 				State <= STATE_2;
 			end
 			STATE_2: begin
-				e <= a + c;
+				t2 <= t1 + c;
 
 				State <= STATE_3;
 			end
 			STATE_3: begin
-				dEQe <= d == e;
+				t3 <= t2 + d;
 
 				State <= STATE_4;
 			end
 			STATE_4: begin
-				dLTe <= d > e;
+				t4 <= t3 + e;
 
 				State <= STATE_5;
 			end
 			STATE_5: begin
-				f <= a - b;
+				t5 <= t4 + f;
 
 				State <= STATE_6;
 			end
 			STATE_6: begin
-				dLTEe <= dEQe + dLTe;
+				t6 <= t5 + g;
 
-				if (dLTEe) begin
-
-				end
-				else begin
-					State <= STATE_10;
-				end
-			end
-
-				if (dLTe) begin
-
-				if (dLTEe) begin
-
-				end
-				else begin
-					State <= STATE_10;
-				end
-			end
-
-				end
-				else begin
-					State <= STATE_9;
-				end
+				State <= STATE_7;
 			end
 			STATE_7: begin
-				g <= e + one;
+				csa1 <= sa > one;
 
 				State <= STATE_8;
 			end
 			STATE_8: begin
-				h <= f + one;
+				csa2 <= sa > two;
 
-				if (dLTEe) begin
-
-				end
-				else begin
-					State <= STATE_11;
-				end
+				State <= STATE_9;
 			end
 			STATE_9: begin
-				g <= d + e;
+				csa3 <= sa > four;
 
 				State <= STATE_10;
 			end
 			STATE_10: begin
-				h <= f + e;
-
-				State <= STATE_11;
+				t7 <= t6 + h;
+				if (csa1) begin
+					State <= STATE_11;
+				end
+				else begin
+					State <= STATE_FINAL;
+				end
 			end
 			STATE_11: begin
-				x <= h << one;
-
-				State <= STATE_12;
+				t7div2 <= t7 >> one;
+				if (csa2) begin
+					State <= STATE_12;
+				end
+				else begin
+					State <= STATE_13;
+				end
 			end
 			STATE_12: begin
-				z <= h >> one;
+				t7div4 <= t7div2 >> one;
+
+				State <= STATE_FINAL;
+			end
+			STATE_13: begin
+				t7div4 <= t7 >> one;
+				if (csa3) begin
+					State <= STATE_14;
+				end
+				else begin
+					State <= STATE_FINAL;
+				end
+			end
+			STATE_14: begin
+				avg <= t7div4 >> one;
 
 				State <= STATE_FINAL;
 			end
