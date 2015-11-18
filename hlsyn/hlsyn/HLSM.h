@@ -27,5 +27,6 @@ public:
 	int createStateReg(ofstream &outputFile);
 	bool areSize(int i, string s, bool sign);
 	int getPrevCycles(int schedule);
+	int getSubIfElse(int s, int v, int c, int startIf, int startElse);
 };
 

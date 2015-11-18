@@ -165,8 +165,6 @@ void HLSM::createHeader(ofstream &w_file) {
 		}
 	}
 
-	w_file << "\tinput Clk, Rst, Start;" << endl;
-
 	first = true;
 	//add 64 bit output
 	if (areSize(64, "output", true)) {
@@ -784,30 +782,75 @@ int HLSM::createHSM(char* file) {
 			//determine next state
 			//if this is the last vertex in the schedule and this isnt the last schedule
 			if ((latestVertex == schedules[latestSchedule]->getVertices().size()-1) && latestSchedule < schedules.size() - 1 && opFound) {
-				if (schedules[latestSchedule + 1]->getVertices()[0]->getConditionIF().compare("no condition") != 0) {//check to see if entering if
-																											   //code has reached an if statement, now check how many cycles the if lasts for
-					stringstream waka;
+				if (schedules[latestSchedule + 1]->getVertices()[0]->getNumIF() > schedules[latestSchedule]->getVertices()[latestVertex]->getNumIF()) {//check to see if entering if
 					int ifcycles = 0;
 					string indent = "";
+					int f = 0;
 
-					int f = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF();
-					ifcycles = schedules[latestSchedule + f]->getVertices().back()->getTime() + schedules[latestSchedule + f]->getVertices().back()->getDelay() - 1;
-					waka << endl << "\t\t\t\tif (" << schedules[latestSchedule + f]->getVertices()[0]->getConditionIF() << ") begin" << endl << waka.str() <<
-						endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl <<
-						"\t\t\t\t\tState <= STATE_" << i + f + ifcycles << ";" << endl << "\t\t\t\tend" << endl << "\t\t\tend" << endl;
-					
-					for (f = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF() - 1; f > 0; f--) { //create nested ifs if needed
-						ifcycles = schedules[latestSchedule + f]->getVertices().back()->getTime() + schedules[latestSchedule + f]->getVertices().back()->getDelay() - 1;
-						waka << endl << "\t\t\t\tif (" << schedules[latestSchedule + f]->getVertices()[0]->getConditionIF() << ") begin" << endl << waka.str() <<
-							endl << "\t\t\t\tend" << endl << "\t\t\t\telse begin" << endl << "\t\t\t\t\tState <= STATE_" << i + f + ifcycles << ";" << endl << "\t\t\t\tend" 
-							<< endl << "\t\t\tend" << endl;
+					//write ifs downward
+					for (f = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF() - schedules[latestSchedule]->getVertices()[0]->getNumIF(); f > 0; f--) { //create nested ifs if needed
+						stateLogic << "\t\t\t\t" << indent << "if (" << schedules[latestSchedule + f]->getVertices()[0]->getConditionIF() << ") begin" << endl;
+						indent = indent + "\t"; //increase the indent for every level of if
 					}
-					stateLogic << waka.str();
+
+					//write deepest nest, just the next schedule
+					ifcycles = getSubIfElse(latestSchedule + 1, schedules[latestSchedule + 1]->getVertices().size() - 1, 0, schedules[latestSchedule + 1]->getVertices()[0]->getNumIF(), schedules[latestSchedule + 1]->getVertices()[0]->getNumElse()) + 1;
+					if (i+ifcycles == states+1) {
+						indent.erase(indent.begin(), indent.begin() + 1); //delete an indent
+						stateLogic << "\t\t\t\t\t" << indent << "State <= STATE_" << i + 1 << ";" << endl << "\t\t\t\t" << indent << "end" << endl << "\t\t\t\t" << indent
+							<< "else begin" << endl << "\t\t\t\t\t" << indent << "State <= STATE_FINAL;" << endl << "\t\t\t\t" << indent << "end" << endl;
+					}
+					else {
+						indent.erase(indent.begin(), indent.begin() + 1); //delete an indent
+						stateLogic << "\t\t\t\t\t" << indent << "State <= STATE_" << i + 1 << ";" << endl << "\t\t\t\t" << indent << "end" << endl << "\t\t\t\t" << indent
+							<< "else begin" << endl << "\t\t\t\t\t" << indent << "State <= STATE_" << i + ifcycles << ";" << endl << "\t\t\t\t" << indent << "end" << endl;
+					}
+
+
+					//write elses outward
+					for (f = 1; f < schedules[latestSchedule + 1]->getVertices()[0]->getNumIF() - schedules[latestSchedule]->getVertices()[0]->getNumIF(); f++) {
+						indent.erase(indent.begin(), indent.begin() + 1); //delete an indent
+						ifcycles = schedules[latestSchedule + 1 + f]->getVertices().back()->getTime() + schedules[latestSchedule + 1 + f]->getVertices().back()->getDelay();
+						int stateNumber = i + 1 + f + ifcycles;
+						if (stateNumber == states+1) {
+							stateLogic << indent << "\t\t\t\telse begin" << endl << "\t\t\t\t\t" << indent << "State <= STATE_FINAL;" << endl << "\t\t\t\t" << indent << "end" <<
+								endl;
+						}
+						else {
+							stateLogic << indent << "\t\t\t\telse begin" << endl << "\t\t\t\t\t" << indent << "State <= STATE_" << stateNumber << ";" << endl << "\t\t\t\t" << indent << "end" <<
+								endl;
+						}
+					}
+
+					//state end
+					stateLogic << "\t\t\tend" << endl;
 					opFound = false;
+
 				}
-				else if (schedules[latestSchedule + 1]->getVertices()[0]->getConditionIF().compare("no condition") == 0) { //leaving a branch, just go to next vertex
-					stateLogic << endl << "\t\t\t\tState <= STATE_" << i + 1 << ";" << endl << "\t\t\tend" << endl;
-					opFound = false;
+				else { //leaving a schedule
+					//if leaving an if make sure next schedule isn't an else, if it is skip those cycles
+					if (schedules[latestSchedule + 1]->getVertices()[0]->_else) {
+						int elsecycles = getSubIfElse(latestSchedule + 1, schedules[latestSchedule + 1]->getVertices().size() - 1, 0, schedules[latestSchedule + 1]->getVertices()[0]->getNumIF(), schedules[latestSchedule + 1]->getVertices()[0]->getNumElse()) + 1;
+						if (elsecycles+i == states + 1) {
+							stateLogic << endl << "\t\t\t\tState <= STATE_FINAL;" << endl << "\t\t\tend" << endl;
+							opFound = false;
+						}
+						else {
+							stateLogic << endl << "\t\t\t\tState <= STATE_" << i + elsecycles << ";" << endl << "\t\t\tend" << endl;
+							opFound = false;
+						}
+					}
+					else {
+						int nextState = i + 1;
+						if(nextState == states+1){
+							stateLogic << endl << "\t\t\t\tState <= STATE_FINAL;" << endl << "\t\t\tend" << endl;
+							opFound = false;
+						}
+						else {
+							stateLogic << endl << "\t\t\t\tState <= STATE_" << i + 1 << ";" << endl << "\t\t\tend" << endl;
+							opFound = false;
+						}
+					}
 				}
 			}
 			else if ((latestVertex < schedules[latestSchedule]->getVertices().size()-1) && opFound) {//else if this is a vertex in the middle of a schedule go to next state
@@ -869,5 +912,29 @@ int HLSM::getPrevCycles(int schedule) {
 		}
 		return cycles;
 	}
+}
+
+int HLSM::getSubIfElse(int latestSchedule, int latestVertex, int c, int startIf, int startElse) {
+	int cycles = c;
+	int currentIfLevel = schedules[latestSchedule]->getVertices()[latestVertex]->getNumIF();
+
+	//add up all the cycles of current if/else level
+	cycles = cycles + schedules[latestSchedule]->getVertices().back()->getTime() + schedules[latestSchedule]->getVertices().back()->getDelay()-1;
+
+	//look at next schedule
+	//if there is a next schedule
+	if (latestSchedule< schedules.size() - 1) {
+		int nextIfLevel = schedules[latestSchedule + 1]->getVertices()[0]->getNumIF();
+		int nextElseLevel = schedules[latestSchedule + 1]->getVertices()[0]->getNumElse();
+
+		if (nextIfLevel < startIf || nextElseLevel < startElse) {
+			return cycles;
+		}
+		else {
+			latestVertex = schedules[latestSchedule + 1]->getVertices().size() - 1;
+			cycles = getSubIfElse(latestSchedule + 1, latestVertex, cycles, startIf, startElse);
+		}
+	}
+	return cycles;
 }
 
