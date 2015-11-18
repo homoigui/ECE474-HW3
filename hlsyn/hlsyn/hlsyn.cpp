@@ -19,7 +19,11 @@ int main(int argc, char* argv[])
 	
 	if (argc == 4) {
 		string s = argv[2];
-		int latency = stoi(s); //converts the latency to int
+		stringstream convert;
+		int latency; //converts the latency to int
+		convert << s;
+		convert >> latency;
+		
 		int read = readfile(argv[1], v, o);
 		read = checkVar(v, o);
 		Operation::seperateOperator(o_list, o); //Gets different things for scheduling
