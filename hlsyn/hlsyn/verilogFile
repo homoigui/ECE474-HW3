@@ -1,11 +1,10 @@
 `timescale 1ns / 1ps
 
-module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
-	input signed [31:0] a, b, c;
-	output reg signed [31:0] z, x;
-	reg signed [31:0] d, e, f, g, h;
+module HLSM (Clk, Rst, Start, Done, u, x, y, dx, a, three, u1, x1, y1, c);
+	input signed [31:0] u, x, y, dx, a, three;
+	output reg signed [31:0] u1, x1, y1, c;
+	reg signed [31:0] t1, t2, t3, t4, t5, t6, t7, vx1;
 	input Clk, Rst, Start;
-	reg unsigned dLTe, dEQe;
 	output reg Done;
 
 	localparam STATE_WAIT = 3'd0,
@@ -18,7 +17,8 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 	           STATE_7 = 3'd7,
 	           STATE_8 = 3'd8,
 	           STATE_9 = 3'd9,
-	           STATE_FINAL = 3'd10;
+	           STATE_10 = 3'd10,
+	           STATE_FINAL = 3'd11;
 
 	reg [3:0] State;
 
@@ -26,8 +26,10 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 		if (Rst == 1'b1) begin
 			State <= STATE_WAIT;
 			Done <= 0;
-			z <= 0;
-			x <= 0;
+			u1 <= 0;
+			x1 <= 0;
+			y1 <= 0;
+			c <= 0;
 		end
 		else begin
 		case (State)
@@ -41,47 +43,54 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 				end
 			end
 			STATE_1: begin
-				d <= a + b;
+				vx1 <= x + dx;
+				t1 <= three * x;
 
 				State <= STATE_2;
 			end
 			STATE_2: begin
-				e <= a + c;
+				x1 <= x + dx;
 
 				State <= STATE_3;
 			end
 			STATE_3: begin
-				dLTe <= d < e;
+				t2 <= u * dx;
+				c <= vx1 < a;
 
 				State <= STATE_4;
 			end
 			STATE_4: begin
-				f <= a - b;
 
 				State <= STATE_5;
 			end
 			STATE_5: begin
-				dEQe <= d == e;
+				t5 <= three * y;
 
 				State <= STATE_6;
 			end
 			STATE_6: begin
-				g <= dLTe ? d : e;
 
 				State <= STATE_7;
 			end
 			STATE_7: begin
-				h <= dEQe ? g : f;
+				t3 <= t1 * t2;
 
 				State <= STATE_8;
 			end
 			STATE_8: begin
-				x <= g << dLTe;
+				t6 <= t5 * dx;
+				t7 <= u * dx;
 
 				State <= STATE_9;
 			end
 			STATE_9: begin
-				z <= h >> dEQe;
+				t4 <= u - t3;
+
+				State <= STATE_10;
+			end
+			STATE_10: begin
+				u1 <= t4 - t6;
+				y1 <= y + t7;
 
 				State <= STATE_FINAL;
 			end
