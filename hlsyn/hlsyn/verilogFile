@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 
-module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
-	input signed [31:0] a, b, c;
-	output reg signed [31:0] z, x;
-	reg signed [31:0] d, f, g, zrin;
+module HLSM (Clk, Rst, Start, Done, a, b, c, zero, one, t, z, x);
+	input signed [31:0] a, b, c, zero, one;
+	input signed t	output reg signed [31:0] z, x;
+	reg signed [31:0] e, g, d, f;
 	input Clk, Rst, Start;
 	output reg Done;
 
@@ -40,44 +40,46 @@ module HLSM (Clk, Rst, Start, Done, a, b, c, z, x);
 			end
 			STATE_1: begin
 				d <= a + b;
-
-				State <= STATE_2;
-			end
-			STATE_2: begin
-				g <= a < b;
-
-				State <= STATE_3;
-			end
-			STATE_3: begin
-				zrin <= a + c;
-				if (g) begin
-					State <= STATE_4;
+				if (t) begin
+					State <= STATE_2;
 				end
 				else begin
 					State <= STATE_5;
 				end
 			end
-			STATE_4: begin
-				zrin <= a + b;
+			STATE_2: begin
+				d <= a - one;
 
-				State <= STATE_5;
+				State <= STATE_3;
+			end
+			STATE_3: begin
+				f <= a + c;
+
+				State <= STATE_4;
+			end
+			STATE_4: begin
+				x <= f - d;
+
+				State <= STATE_FINAL;
 			end
 			STATE_5: begin
+				e <= a + c;
 				f <= a * c;
 
 				State <= STATE_6;
 			end
 			STATE_6: begin
+				g <= d > e;
 
 				State <= STATE_7;
 			end
 			STATE_7: begin
-				x <= f - d;
+				z <= g ? d : e;
 
 				State <= STATE_8;
 			end
 			STATE_8: begin
-				z <= zrin + f;
+				x <= f - d;
 
 				State <= STATE_FINAL;
 			end

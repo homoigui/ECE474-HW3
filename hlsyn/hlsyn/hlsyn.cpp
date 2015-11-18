@@ -67,6 +67,6 @@ int main(int argc, char* argv[])
 	else {
 		cout << "Usage: ./hlsyn cFile latency verilogFile" << endl;
 	}
-
+	cout << "DONE!" << endl;
 	return 0;
 }
